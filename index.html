@@ -32,7 +32,6 @@
     transition:1s ease;
   }
 
-  /* Hero */
   #hero {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1650&q=80') center/cover no-repeat;
     color:#fff;
@@ -54,7 +53,6 @@
     box-shadow:0 0 15px rgba(255,75,75,0.5);
   }
 
-  /* Featured Work */
   #work h2 { font-size:2.5rem; margin-bottom:40px; }
   .piece {
     margin:20px 0;
@@ -73,10 +71,8 @@
     text-shadow:0 0 5px rgba(255,75,75,0.3);
   }
 
-  /* About / Voice */
   #about { max-width:800px; padding:0 20px; font-size:1.2rem; line-height:1.8; }
 
-  /* Contact / Sparks */
   #contact h2 { margin-bottom:20px; }
   #contact p { max-width:600px; margin-bottom:30px; font-size:1.1rem; }
   #contact input, #contact textarea {
@@ -109,10 +105,8 @@
   }
   #sparkMessage.visible { opacity:1; }
 
-  /* Footer */
   footer { padding:50px 20px; text-align:center; color:#888; font-size:0.9rem; }
 
-  /* Ember animation */
   .ember {
     position:absolute;
     background: radial-gradient(circle, rgba(255,50,50,1) 0%, rgba(240,140,79,0) 60%);
@@ -127,7 +121,6 @@
     100% { transform: translateY(-1200px) scale(1); opacity:0; }
   }
 
-  /* Spark fly */
   .spark-fly {
     position: absolute;
     width:6px;
@@ -142,20 +135,17 @@
     100% { transform: translateY(-120px) scale(0.5); opacity:0; }
   }
 
-  /* Fade-in sections */
   .visible { opacity:1 !important; transform:translateY(0) !important; }
 </style>
 </head>
 <body>
 
-<!-- Hero Section -->
 <section id="hero">
   <h1>Red Leaves Stay Read</h1>
   <p>I think of you most when the air begins to change. When heat lingers enough to tease, but autumn slips in like a secret whispered too close.</p>
   <a href="#work" class="button">Enter the Fire</a>
 </section>
 
-<!-- Featured Work -->
 <section id="work">
   <h2>Red Letter Scriptures</h2>
   <div class="piece" onclick="window.open('https://ko-fi.com/readthatagain', '_blank')">
@@ -172,13 +162,11 @@
   </div>
 </section>
 
-<!-- About / Voice -->
 <section id="about">
   <h2>RTA</h2>
   <p>A space for sparks, letters, and fires that burn quietly. Not everything is meant to be spoken aloud, yet some things demand to be read. Each piece is an invitation, an almost that lingers longer than it should. Step closer, if you dare.</p>
 </section>
 
-<!-- Contact / Sparks -->
 <section id="contact">
   <h2>Send a Spark</h2>
   <p>If something I’ve written stirs you, or if a thought refuses to leave your mind, send a spark. It could be a question, a reflection, or a fragment that burned too bright to ignore. I read each one. Choose your path:</p>
@@ -194,7 +182,6 @@
   <p>Or reach me directly on <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a> for immediate sparks and fires.</p>
 </section>
 
-<!-- Footer -->
 <footer>
   &copy; 2025 RTA — Quiet Fires. All sparks kept in confidence.
 </footer>
@@ -207,4 +194,59 @@
     ember.style.left=Math.random()*window.innerWidth+'px';
     ember.style.top=Math.random()*window.innerHeight+'px';
     ember.style.width=2+Math.random()*4+'px';
-    ember.style.height=
+    ember.style.height=2+Math.random()*4+'px';
+    document.body.appendChild(ember);
+  }
+
+  // Scroll fade-in
+  function onScroll(){
+    document.querySelectorAll('section').forEach(sec=>{
+      if(sec.getBoundingClientRect().top < window.innerHeight*0.85){
+        sec.classList.add('visible');
+      }
+    });
+  }
+  window.addEventListener('scroll', onScroll);
+  window.addEventListener('load', onScroll);
+
+  // Spark form
+  const form = document.getElementById('sparkForm');
+  const message = document.getElementById('sparkMessage');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Fly-up spark animation
+    for(let i=0;i<3;i++){
+      const spark = document.createElement('div');
+      spark.className = 'spark-fly';
+      const btnRect = form.querySelector('button').getBoundingClientRect();
+      spark.style.left = btnRect.left + btnRect.width/2 + (Math.random()*20-10) + 'px';
+      spark.style.top = btnRect.top + 'px';
+      document.body.appendChild(spark);
+      setTimeout(()=> spark.remove(), 1000);
+    }
+
+    // Send the form
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if(response.ok){
+        message.textContent = "Spark sent ✦";
+        message.classList.add('visible');
+        form.reset();
+        setTimeout(()=> message.classList.remove('visible'), 3000);
+      } else {
+        throw new Error('Form submission failed');
+      }
+    }).catch(() => {
+      message.textContent = "Oops, try again ✦";
+      message.classList.add('visible');
+      setTimeout(()=> message.classList.remove('visible'), 3000);
+    });
+  });
+</script>
+</body>
+</html>
