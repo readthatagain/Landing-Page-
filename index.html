@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTA — Quiet Fires</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family: 'Playfair Display', serif;
+    background: #080808;
+    color: #f0f0f0;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+  a { color:#f08c4f; text-decoration:none; }
+  a:hover { text-decoration: underline; }
+
+  /* Sections */
+  section { padding: 100px 20px; min-height: 100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+
+  /* Hero */
+  #hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1650&q=80') center/cover no-repeat; color:#fff; }
+  #hero h1 { font-size:3rem; margin-bottom:20px; animation:fadeUp 2s ease; }
+  #hero p { font-size:1.5rem; max-width:600px; margin-bottom:40px; animation:fadeUp 2.5s ease; }
+  #hero a.button { padding: 15px 30px; border:2px solid #f08c4f; border-radius:30px; font-size:1.2rem; transition: 0.3s; }
+  #hero a.button:hover { background:#f08c4f; color:#080808; }
+
+  /* Featured Work */
+  #work h2 { font-size:2.5rem; margin-bottom:40px; }
+  .piece { margin:20px 0; max-width:700px; background:rgba(255,255,255,0.05); padding:30px; border-radius:15px; transition:0.3s; cursor:pointer; }
+  .piece:hover { background:rgba(240,140,79,0.2); transform:translateY(-5px); }
+
+  /* About / Voice */
+  #about { max-width:800px; padding:0 20px; font-size:1.2rem; line-height:1.8; }
+
+  /* Contact / Sparks */
+  #contact input, #contact textarea { width:80%; max-width:500px; padding:15px; margin:10px 0; border-radius:10px; border:none; font-size:1rem; }
+  #contact button { padding:15px 30px; border-radius:30px; border:none; background:#f08c4f; color:#080808; font-size:1.1rem; cursor:pointer; transition:0.3s; }
+  #contact button:hover { background:#e06a2f; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    0% { opacity:0; transform: translateY(30px); }
+    100% { opacity:1; transform: translateY(0); }
+  }
+
+  /* Footer */
+  footer { padding:50px 20px; text-align:center; color: #888; font-size:0.9rem; }
+</style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section id="hero">
+  <h1>Red Leaves Stay Read</h1>
+  <p>I think of you most when the air begins to change. When heat lingers enough to tease, but autumn slips in like a secret whispered too close.</p>
+  <a href="#work" class="button">Enter the Fire</a>
+</section>
+
+<!-- Featured Work -->
+<section id="work">
+  <h2>Red Letter Scriptures</h2>
+  <div class="piece" onclick="window.open('https://ko-fi.com/', '_blank')">
+    <h3>Genesis</h3>
+    <p>The first words, a spark that refused to fade, the flame of quiet truths dancing in the dark. Read more…</p>
+  </div>
+  <div class="piece" onclick="window.open('https://ko-fi.com/', '_blank')">
+    <h3>Quiet Fires</h3>
+    <p>Embers linger where whispers almost touch, where desire hums beneath restraint. Read more…</p>
+  </div>
+  <div class="piece" onclick="window.open('https://ko-fi.com/', '_blank')">
+    <h3>Red Leaves Stay Read</h3>
+    <p>Moments held and released, the pull of unseen gravity shaping what we almost were. Read more…</p>
+  </div>
+</section>
+
+<!-- About / Voice -->
+<section id="about">
+  <h2>RTA</h2>
+  <p>A space for sparks, letters, and fires that burn quietly. Not everything is meant to be spoken aloud, yet some things demand to be read. Each piece is an invitation, an almost that lingers longer than it should. Step closer, if you dare.</p>
+</section>
+
+<!-- Contact / Sparks -->
+<section id="contact">
+  <h2>Send a Spark</h2>
+  <form action="https://formspree.io/f/mnqlknez" method="POST">
+    <input type="text" name="name" placeholder="Your Name" required><br>
+    <input type="email" name="_replyto" placeholder="Your Email" required><br>
+    <textarea name="message" rows="6" placeholder="Your Spark" required></textarea><br>
+    <button type="submit">Ignite</button>
+  </form>
+</section>
+
+<!-- Footer -->
+<footer>
+  &copy; 2025 RTA — Quiet Fires. All sparks kept in confidence.
+</footer>
+
+</body>
+</html>
