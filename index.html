@@ -6,125 +6,89 @@
 <title>RTA — Read That Again</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* Base styles */
+  /* General Styles */
   body {
     margin: 0;
     padding: 0;
-    background: #000;
-    color: #fff;
     font-family: 'Playfair Display', serif;
-    line-height: 1.7;
+    background-color: #000;
+    color: #fff;
+    line-height: 1.6;
     overflow-x: hidden;
   }
 
-  a { color: #fff; text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
 
   header {
     text-align: center;
-    padding: 30px 10px;
-    font-size: 2em;
+    padding: 2rem 1rem;
+  }
+
+  header h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  nav a {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  main {
+    max-width: 800px;
+    margin: auto;
+    padding: 0 1rem 4rem 1rem;
+  }
+
+  section.post {
+    margin-bottom: 3rem;
+  }
+
+  section.post h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  section.post p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: #111;
     position: relative;
   }
 
-  .navigation {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-
-  .content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-
-  .post {
-    margin-bottom: 50px;
-  }
-
-  h2 { margin-top: 40px; font-size: 1.8em; }
-  p { font-size: 1.1em; color: #fff; text-decoration: none; }
-
-  /* Reddit & Sparks */
-  .reddit-feed, .community-sparks {
-    margin: 40px auto;
-    padding: 20px;
-    border: 1px solid #c00;
-    border-radius: 12px;
-    max-width: 800px;
-    background: rgba(255,0,0,0.05);
-  }
-
-  .reddit-feed ul, .community-sparks ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .reddit-feed li, .community-sparks li {
-    margin-bottom: 10px;
-  }
-
-  .community-sparks textarea, .community-sparks input {
-    border-radius: 6px;
-    border: 1px solid #c00;
-    padding: 10px;
-    background: #111;
-    color: #fff;
-    font-size: 1em;
-    width: 100%;
-  }
-
-  .community-sparks button {
-    background: #c00;
-    color: #fff;
-    border: none;
-    padding: 10px 25px;
-    font-size: 1em;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-  }
-
-  .community-sparks button:hover {
-    background: #ff3333;
-  }
-
-  footer {
-    text-align: center;
-    padding: 20px;
-    font-size: 1.1em;
-    margin-top: 50px;
-  }
-
   footer a {
-    margin: 0 15px;
-    font-weight: bold;
+    display: inline-block;
+    margin: 0.5rem 1rem;
+    padding: 0.5rem 1rem;
+    background: #b20000;
     color: #fff;
+    border-radius: 5px;
+    transition: 0.3s;
   }
 
-  /* Fire meter */
-  #fire-meter {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 30px;
-    height: 100px;
-    border: 2px solid #c00;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.2);
-    overflow: hidden;
+  footer a:hover {
+    background: #ff0000;
+    transform: scale(1.05);
   }
 
-  #fire-fill {
-    width: 100%;
-    height: 0;
-    background: linear-gradient(to top, #ff3333, #ff0000);
-    transition: height 0.5s ease;
-  }
-
-  /* Red smoke background */
+  /* Red Smoke */
   #red-smoke {
     position: fixed;
     top: 0;
@@ -133,102 +97,155 @@
     height: 100%;
     pointer-events: none;
     z-index: -1;
-    background: url('https://i.ibb.co/VqRmfVJ/red-smoke.gif') no-repeat center center;
-    background-size: cover;
-    opacity: 0.15;
+    overflow: hidden;
   }
+
+  .smoke {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(255,0,0,0.15) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    animation: floatUp 20s linear infinite;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0.5); opacity: 0.3; }
+    50% { opacity: 0.15; }
+    100% { transform: translateY(-50vh) scale(1.5); opacity: 0; }
+  }
+
+  /* Spark Form */
+  #spark-form {
+    margin: 2rem 0;
+    text-align: center;
+  }
+
+  #spark-form textarea {
+    width: 100%;
+    max-width: 600px;
+    height: 100px;
+    padding: 1rem;
+    border-radius: 5px;
+    border: none;
+    resize: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+  }
+
+  #spark-form input[type="submit"] {
+    margin-top: 1rem;
+    padding: 0.5rem 1.5rem;
+    background: #b20000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  #spark-form input[type="submit"]:hover {
+    background: #ff0000;
+  }
+
+  /* Fire Meter */
+  #fire-meter {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+  }
+
 </style>
 </head>
 <body>
-<div id="red-smoke"></div>
 
-<header>RTA — Read That Again</header>
-
-<div class="navigation">
-  <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit Posts</a>
-  <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
-  <a href="https://ko-fi.com/Important-Fig600" target="_blank">Kofi</a>
+<!-- Red Smoke Effect -->
+<div id="red-smoke">
+  <div class="smoke" style="left:5%; animation-delay:0s;"></div>
+  <div class="smoke" style="left:20%; animation-delay:4s;"></div>
+  <div class="smoke" style="left:35%; animation-delay:8s;"></div>
+  <div class="smoke" style="left:50%; animation-delay:2s;"></div>
+  <div class="smoke" style="left:65%; animation-delay:6s;"></div>
+  <div class="smoke" style="left:80%; animation-delay:10s;"></div>
 </div>
 
-<div class="content">
+<header>
+  <h1>RTA — Read That Again</h1>
+  <nav>
+    <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
+    <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
+    <a href="https://ko-fi.com/Important-Fig600" target="_blank">Ko-fi</a>
+  </nav>
+</header>
+
+<main>
   <!-- Example Post -->
-  <div class="post">
+  <section class="post">
+    <h2>Genesis</h2>
+    <p>Read the full post on <a href="https://ko-fi.com/Important-Fig600" target="_blank">Ko-fi</a> or on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a>.</p>
+  </section>
+
+  <section class="post">
+    <h2>The Queen's Confession</h2>
+    <p>Read the full post on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a> or <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit profile</a>.</p>
+  </section>
+
+  <section class="post">
     <h2>Starved</h2>
-    <p>Sometimes I wonder if you know what I see when I look at you... <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Read more</a></p>
-  </div>
+    <p>Read the full post on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a> or <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit profile</a>.</p>
+  </section>
 
-  <div class="post">
+  <section class="post">
     <h2>For the Ones Who Linger Here</h2>
-    <p>Some women are built like wildfire... Others, like slow burning coals... <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Read more</a></p>
-  </div>
+    <p>Read the full post on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a> or <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit profile</a>.</p>
+  </section>
 
-  <!-- Reddit Feed -->
-  <div class="reddit-feed">
-    <h3>Latest r/readthatagain Posts</h3>
-    <ul>
-      <li><a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit Posts</a></li>
-      <li><a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a></li>
-    </ul>
-  </div>
-
-  <!-- Spark Submission -->
-  <div class="community-sparks">
-    <h3>Submit Your Spark</h3>
-    <form id="sparkForm" action="https://formspree.io/f/xyznjkpl" method="POST" target="_blank">
-      <textarea name="spark" placeholder="Write your spark..." required></textarea>
-      <input type="email" name="email" placeholder="Optional Email">
-      <button type="submit">Send Spark</button>
+  <!-- Spark Submission Form -->
+  <section id="spark-form">
+    <h2>Send a Spark</h2>
+    <form action="https://formspree.io/f/xyznjkpl" method="POST">
+      <textarea name="spark" placeholder="Write your spark here..."></textarea><br>
+      <input type="email" name="email" placeholder="Optional email">
+      <input type="submit" value="Send">
     </form>
-  </div>
-</div>
-
-<!-- Fire Meter -->
-<div id="fire-meter">
-  <div id="fire-fill"></div>
-</div>
+    <div id="fire-meter">🔥 Fire Level: <span id="fire-count">0</span></div>
+  </section>
+</main>
 
 <footer>
-  <a href="https://ko-fi.com/Important-Fig600" target="_blank">Kofi</a>
+  <p>Explore more:</p>
   <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
   <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
+  <a href="https://ko-fi.com/Important-Fig600" target="_blank">Ko-fi</a>
 </footer>
 
 <script>
-  // Fire meter effect
-  const fireFill = document.getElementById('fire-fill');
-  const sparkForm = document.getElementById('sparkForm');
+  // Fire Meter Counter
+  let fireCount = 0;
+  const fireCountEl = document.getElementById('fire-count');
+  const form = document.querySelector('#spark-form form');
 
-  let fireLevel = 0;
-
-  sparkForm.addEventListener('submit', function(e){
-    // Increase fire meter by 20% each spark submission
-    fireLevel += 20;
-    if(fireLevel > 100) fireLevel = 100;
-    fireFill.style.height = fireLevel + '%';
-
-    // Tiny ember animation
-    const ember = document.createElement('div');
-    ember.style.position = 'fixed';
-    ember.style.width = '10px';
-    ember.style.height = '10px';
-    ember.style.background = '#ff0000';
-    ember.style.borderRadius = '50%';
-    ember.style.left = Math.random() * window.innerWidth + 'px';
-    ember.style.top = window.innerHeight + 'px';
-    ember.style.opacity = 0.8;
-    document.body.appendChild(ember);
-
-    let rise = 0;
-    const anim = setInterval(() => {
-      rise += 2;
-      ember.style.top = (window.innerHeight - rise) + 'px';
-      ember.style.opacity -= 0.01;
-      if(rise > window.innerHeight) {
-        clearInterval(anim);
-        document.body.removeChild(ember);
-      }
-    }, 10);
+  form.addEventListener('submit', function(e) {
+    fireCount += 1;
+    fireCountEl.textContent = fireCount;
   });
+
+  // Random quote display for sparks (example)
+  const sparks = [
+    "Every unread word holds a secret.",
+    "Slow burns leave the deepest marks.",
+    "Some confessions never need an address.",
+    "You are seen, even when silent."
+  ];
+
+  function randomSpark() {
+    const sparkDisplay = document.createElement('p');
+    sparkDisplay.style.fontStyle = 'italic';
+    sparkDisplay.textContent = sparks[Math.floor(Math.random() * sparks.length)];
+    document.getElementById('spark-form').appendChild(sparkDisplay);
+  }
+
+  setInterval(randomSpark, 15000); // every 15 seconds
 </script>
 
 </body>
