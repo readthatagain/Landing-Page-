@@ -23,6 +23,8 @@
       flex-direction: column;
       min-height: 100vh;
       font-size: 1.05rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     header {
@@ -31,7 +33,7 @@
       font-size: 2rem;
       letter-spacing: 2px;
       color: var(--accent);
-      text-shadow: 0 0 10px var(--glow);
+      text-shadow: 0 0 6px var(--glow);
     }
 
     main {
@@ -81,7 +83,7 @@
       color: var(--accent);
       position: relative;
       z-index: 1;
-      text-shadow: 0 0 8px var(--glow);
+      text-shadow: none; /* remove blur */
     }
 
     .post p {
@@ -90,7 +92,8 @@
       opacity: 0.95;
       position: relative;
       z-index: 1;
-      color: #f5f5f5 !important; /* force white for summaries */
+      color: #f5f5f5 !important;
+      text-shadow: none; /* remove blur */
     }
 
     .post a {
@@ -100,7 +103,7 @@
 
     .post p a {
       color: #f5f5f5 !important;
-      text-decoration: underline; /* optional for emphasis */
+      text-decoration: underline;
     }
 
     /* Spark Section */
@@ -117,7 +120,7 @@
 
     #spark-section h2 {
       color: var(--accent);
-      text-shadow: 0 0 8px var(--glow);
+      text-shadow: none;
       margin-bottom: 1rem;
       font-size: 1.4rem;
     }
@@ -127,6 +130,7 @@
       opacity: 0.95;
       margin-bottom: 1.5rem;
       color: #f5f5f5;
+      text-shadow: none;
     }
 
     #spark-form textarea, #spark-form input {
@@ -151,7 +155,6 @@
       border: none;
       border-radius: 0.5rem;
       cursor: pointer;
-      text-shadow: 0 0 5px var(--glow);
       transition: background 0.3s ease;
     }
 
@@ -164,7 +167,6 @@
       font-style: italic;
       opacity: 0;
       transition: opacity 0.5s ease;
-      text-shadow: 0 0 6px var(--glow);
       font-size: 1.05rem;
       color: #f5f5f5;
     }
@@ -209,6 +211,7 @@
       text-decoration: none;
       transition: color 0.3s ease, text-shadow 0.4s ease, transform 0.3s ease;
       position: relative;
+      text-shadow: none;
     }
 
     footer a::after {
@@ -229,7 +232,7 @@
 
     footer a:hover {
       color: var(--accent);
-      text-shadow: 0 0 12px var(--glow);
+      text-shadow: 0 0 6px var(--glow);
       transform: translateY(-2px);
     }
 
