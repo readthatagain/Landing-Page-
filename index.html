@@ -3,249 +3,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTA — Hidden Rooms</title>
+<title>RTA — Read That Again</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  /* Base styles */
   body {
-    margin:0;
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
     font-family: 'Playfair Display', serif;
-    background-color: #000;
-    color: #fff;
+    line-height: 1.7;
     overflow-x: hidden;
-    line-height: 1.8;
   }
 
-  a {
-    color: #fff;
-    text-decoration: none;
-    transition: all 0.3s ease;
-  }
-
-  a:hover {
-    color: #c00;
-  }
+  a { color: #fff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
 
   header {
     text-align: center;
-    padding: 2rem 1rem;
-  }
-
-  header h1 {
-    font-size: 3rem;
-    letter-spacing: 3px;
-    color: #c00;
-    margin-bottom: 1rem;
-  }
-
-  .links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .spark-container {
-    text-align: center;
-    margin: 2rem 0;
-    font-size: 1.4rem;
-    color: #ff4444;
-    cursor: pointer;
+    padding: 30px 10px;
+    font-size: 2em;
     position: relative;
   }
 
-  .hidden-room {
-    font-size: 2.2rem;
-    text-align: center;
-    margin: 3rem 0 2rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #c00;
+  .navigation {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
 
   .post {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 1rem;
+    margin-bottom: 50px;
   }
 
-  .post p {
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-    text-decoration: none;
-    color: #fff;
-  }
+  h2 { margin-top: 40px; font-size: 1.8em; }
+  p { font-size: 1.1em; color: #fff; text-decoration: none; }
 
-  .community-sparks {
-    max-width: 800px;
-    margin: 3rem auto;
-    background: rgba(255,0,0,0.05);
-    padding: 1rem 2rem;
+  /* Reddit & Sparks */
+  .reddit-feed, .community-sparks {
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #c00;
     border-radius: 12px;
+    max-width: 800px;
+    background: rgba(255,0,0,0.05);
   }
 
-  .fire-meter {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 20px;
-    height: 150px;
-    background: rgba(255,0,0,0.2);
-    border-radius: 10px;
-    overflow: hidden;
+  .reddit-feed ul, .community-sparks ul {
+    list-style: none;
+    padding: 0;
   }
 
-  .fire-level {
+  .reddit-feed li, .community-sparks li {
+    margin-bottom: 10px;
+  }
+
+  .community-sparks textarea, .community-sparks input {
+    border-radius: 6px;
+    border: 1px solid #c00;
+    padding: 10px;
+    background: #111;
+    color: #fff;
+    font-size: 1em;
     width: 100%;
-    height: 0%;
-    background: linear-gradient(180deg, #ff4444, #c00);
-    border-radius: 10px;
-    transition: height 0.5s ease;
+  }
+
+  .community-sparks button {
+    background: #c00;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .community-sparks button:hover {
+    background: #ff3333;
   }
 
   footer {
     text-align: center;
-    padding: 3rem 1rem;
-    background: rgba(255,0,0,0.05);
-    margin-top: 3rem;
+    padding: 20px;
+    font-size: 1.1em;
+    margin-top: 50px;
   }
 
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  .reddit-feed {
-    max-width: 800px;
-    margin: 2rem auto;
-    background: rgba(255,0,0,0.05);
-    padding: 1rem;
-    border-radius: 12px;
-  }
-
-  .reddit-feed a {
+  footer a {
+    margin: 0 15px;
+    font-weight: bold;
     color: #fff;
-    text-decoration: none;
   }
 
-  .reddit-feed a:hover {
-    color: #c00;
-  }
-
-  /* Red smoke/embers animation */
-  .smoke {
+  /* Fire meter */
+  #fire-meter {
     position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:-1;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 100px;
+    border: 2px solid #c00;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.2);
+    overflow: hidden;
   }
 
-  .ember {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background: #c00;
-    border-radius: 50%;
-    opacity: 0.7;
-    animation: floatUp linear infinite;
+  #fire-fill {
+    width: 100%;
+    height: 0;
+    background: linear-gradient(to top, #ff3333, #ff0000);
+    transition: height 0.5s ease;
   }
 
-  @keyframes floatUp {
-    0% { transform: translateY(100vh) scale(0.5); opacity: 0.7; }
-    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  /* Red smoke background */
+  #red-smoke {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: url('https://i.ibb.co/VqRmfVJ/red-smoke.gif') no-repeat center center;
+    background-size: cover;
+    opacity: 0.15;
   }
 </style>
 </head>
 <body>
+<div id="red-smoke"></div>
 
-<div class="smoke" id="smoke"></div>
+<header>RTA — Read That Again</header>
 
-<header>
-  <h1>RTA</h1>
-  <div class="links">
-    <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
-    <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
-    <a href="https://ko-fi.com/rta" target="_blank">Ko-fi</a>
-    <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
+<div class="navigation">
+  <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit Posts</a>
+  <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
+  <a href="https://ko-fi.com/Important-Fig600" target="_blank">Kofi</a>
+</div>
+
+<div class="content">
+  <!-- Example Post -->
+  <div class="post">
+    <h2>Starved</h2>
+    <p>Sometimes I wonder if you know what I see when I look at you... <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Read more</a></p>
   </div>
-</header>
 
-<div class="spark-container" id="spark">Click to see a spark...</div>
+  <div class="post">
+    <h2>For the Ones Who Linger Here</h2>
+    <p>Some women are built like wildfire... Others, like slow burning coals... <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Read more</a></p>
+  </div>
 
-<h2 class="hidden-room">Hidden Rooms</h2>
+  <!-- Reddit Feed -->
+  <div class="reddit-feed">
+    <h3>Latest r/readthatagain Posts</h3>
+    <ul>
+      <li><a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit Posts</a></li>
+      <li><a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a></li>
+    </ul>
+  </div>
 
-<div class="post">
-  <p>For the Ones Who Linger Here: Some women are built like wildfire… Others, like slow burning coals…</p>
-  <p>Then there are the rare few… The ones who smolder in silence…</p>
-  <p>Turning every glance, every thought, into something dangerous to ignore…</p>
+  <!-- Spark Submission -->
+  <div class="community-sparks">
+    <h3>Submit Your Spark</h3>
+    <form id="sparkForm" action="https://formspree.io/f/xyznjkpl" method="POST" target="_blank">
+      <textarea name="spark" placeholder="Write your spark..." required></textarea>
+      <input type="email" name="email" placeholder="Optional Email">
+      <button type="submit">Send Spark</button>
+    </form>
+  </div>
 </div>
 
-<div class="community-sparks" id="community-sparks">
-  <h3>Community Sparks</h3>
-  <p>No sparks yet. Be the first.</p>
-</div>
-
-<div class="reddit-feed">
-  <h3>Latest r/readthatagain Posts</h3>
-  <ul>
-    <li><a href="https://www.reddit.com/r/readthatagain/comments/1" target="_blank">Post 1</a></li>
-    <li><a href="https://www.reddit.com/r/readthatagain/comments/2" target="_blank">Post 2</a></li>
-    <li><a href="https://www.reddit.com/r/readthatagain/comments/3" target="_blank">Post 3</a></li>
-  </ul>
-</div>
-
-<div class="fire-meter">
-  <div class="fire-level" id="fire-level"></div>
+<!-- Fire Meter -->
+<div id="fire-meter">
+  <div id="fire-fill"></div>
 </div>
 
 <footer>
-  <div class="footer-links">
-    <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
-    <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Profile</a>
-    <a href="https://ko-fi.com/rta" target="_blank">Ko-fi</a>
-  </div>
-  <p>© 2025 RTA — Read That Again</p>
+  <a href="https://ko-fi.com/Important-Fig600" target="_blank">Kofi</a>
+  <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
+  <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
 </footer>
 
 <script>
-  // Random Sparks
-  const sparks = [
-    "You want it slow… until it isn’t.",
-    "I see you in every late night scroll.",
-    "Some whispered commands can burn louder than fire.",
-    "Hidden rooms hold the secrets worth finding.",
-    "She isn’t asking to be worshipped. She just moves like something sacred."
-  ];
-  const sparkContainer = document.getElementById('spark');
-  sparkContainer.textContent = sparks[Math.floor(Math.random() * sparks.length)];
-  sparkContainer.onclick = () => {
-    sparkContainer.textContent = sparks[Math.floor(Math.random() * sparks.length)];
-    addFire();
-  };
+  // Fire meter effect
+  const fireFill = document.getElementById('fire-fill');
+  const sparkForm = document.getElementById('sparkForm');
 
-  // Fire Meter
-  const fireLevel = document.getElementById('fire-level');
-  let fireHeight = 0;
-  function addFire() {
-    if(fireHeight < 100) fireHeight += 10;
-    fireLevel.style.height = fireHeight + '%';
-  }
+  let fireLevel = 0;
 
-  // Generate embers
-  const smoke = document.getElementById('smoke');
-  for(let i=0;i<20;i++){
-    let ember = document.createElement('div');
-    ember.classList.add('ember');
-    ember.style.left = Math.random() * 100 + 'vw';
-    ember.style.animationDuration = (5 + Math.random()*5) + 's';
-    ember.style.width = ember.style.height = (2 + Math.random()*4) + 'px';
-    smoke.appendChild(ember);
-  }
+  sparkForm.addEventListener('submit', function(e){
+    // Increase fire meter by 20% each spark submission
+    fireLevel += 20;
+    if(fireLevel > 100) fireLevel = 100;
+    fireFill.style.height = fireLevel + '%';
+
+    // Tiny ember animation
+    const ember = document.createElement('div');
+    ember.style.position = 'fixed';
+    ember.style.width = '10px';
+    ember.style.height = '10px';
+    ember.style.background = '#ff0000';
+    ember.style.borderRadius = '50%';
+    ember.style.left = Math.random() * window.innerWidth + 'px';
+    ember.style.top = window.innerHeight + 'px';
+    ember.style.opacity = 0.8;
+    document.body.appendChild(ember);
+
+    let rise = 0;
+    const anim = setInterval(() => {
+      rise += 2;
+      ember.style.top = (window.innerHeight - rise) + 'px';
+      ember.style.opacity -= 0.01;
+      if(rise > window.innerHeight) {
+        clearInterval(anim);
+        document.body.removeChild(ember);
+      }
+    }, 10);
+  });
 </script>
 
 </body>
