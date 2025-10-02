@@ -1,184 +1,252 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Read That Again — RTA</title>
-  <style>
-    /* Reset + Background */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #000;
-      color: #fff;
-      font-family: 'Georgia', serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-      position: relative;
-      min-height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTA — Hidden Rooms</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family: 'Playfair Display', serif;
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+    line-height: 1.8;
+  }
 
-    /* Red smoke animation background */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 20% 30%, rgba(255,0,0,0.15), transparent 70%),
-                  radial-gradient(circle at 80% 70%, rgba(255,0,0,0.12), transparent 70%);
-      animation: drift 25s infinite alternate ease-in-out;
-      z-index: -1;
-    }
-    @keyframes drift {
-      0% { transform: translate(0,0) scale(1); }
-      100% { transform: translate(-5%, -5%) scale(1.1); }
-    }
+  a {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
 
-    /* Layout */
-    .container { max-width: 800px; margin: auto; padding: 2rem; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; margin-bottom: 1rem; color: #fff; }
-    h1 { font-size: 2.5rem; text-align: center; }
-    h2 { margin-top: 3rem; font-size: 1.8rem; }
-    h3 { margin-top: 2rem; font-size: 1.4rem; }
-    p { margin-bottom: 1rem; font-size: 1.1rem; }
+  a:hover {
+    color: #c00;
+  }
 
-    /* Sparks grid */
-    .sparks { display: grid; gap: 1rem; margin-top: 1rem; }
-    .spark {
-      padding: 1rem;
-      border-left: 3px solid #c00;
-      background: rgba(255,255,255,0.05);
-      font-style: italic;
-    }
+  header {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
 
-    /* Form */
-    form { margin-top: 1rem; }
-    input, textarea {
-      width: 100%; padding: 0.8rem; margin-bottom: 1rem;
-      background: rgba(255,255,255,0.08); border: none; color: #fff;
-    }
-    button {
-      background: #c00; color: #fff; border: none;
-      padding: 0.8rem 1.5rem; cursor: pointer; font-size: 1rem;
-    }
-    button:hover { background: #900; }
+  header h1 {
+    font-size: 3rem;
+    letter-spacing: 3px;
+    color: #c00;
+    margin-bottom: 1rem;
+  }
 
-    /* Hidden Rooms */
-    .hidden-link {
-      color: #c00;
-      cursor: pointer;
-      margin-right: 1rem;
-    }
-    .hidden-room {
-      display: none;
-      margin-top: 1rem;
-      padding: 1rem;
-      background: rgba(255,255,255,0.05);
-      border-left: 3px solid #c00;
-    }
+  .links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 3rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      font-size: 1.1rem;
-    }
-    footer a {
-      color: #c00;
-      text-decoration: none;
-      margin: 0 0.5rem;
-    }
-    footer a:hover { text-decoration: underline; }
-  </style>
+  .spark-container {
+    text-align: center;
+    margin: 2rem 0;
+    font-size: 1.4rem;
+    color: #ff4444;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .hidden-room {
+    font-size: 2.2rem;
+    text-align: center;
+    margin: 3rem 0 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #c00;
+  }
+
+  .post {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+
+  .post p {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #fff;
+  }
+
+  .community-sparks {
+    max-width: 800px;
+    margin: 3rem auto;
+    background: rgba(255,0,0,0.05);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+  }
+
+  .fire-meter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 20px;
+    height: 150px;
+    background: rgba(255,0,0,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .fire-level {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(180deg, #ff4444, #c00);
+    border-radius: 10px;
+    transition: height 0.5s ease;
+  }
+
+  footer {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: rgba(255,0,0,0.05);
+    margin-top: 3rem;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .reddit-feed {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: rgba(255,0,0,0.05);
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .reddit-feed a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .reddit-feed a:hover {
+    color: #c00;
+  }
+
+  /* Red smoke/embers animation */
+  .smoke {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:-1;
+  }
+
+  .ember {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #c00;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0.5); opacity: 0.7; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Read That Again</h1>
 
-    <div class="section">
-      <h2>Sparks</h2>
-      <div class="sparks">
-        <div class="spark">“Sometimes I wonder if you know what I see when I look at you...”</div>
-        <div class="spark">“You want it slow… until it isn't.”</div>
-        <div class="spark">“She’s not looking for perfection. She’s looking for presence.”</div>
-        <div class="spark">“If you think it’s not about you… read it again.”</div>
-        <div class="spark">“Some women are built like wildfire. Others, like slow burning coals.”</div>
-      </div>
+<div class="smoke" id="smoke"></div>
 
-      <!-- Spark form -->
-      <form action="https://formspree.io/f/xyznjkpl" method="POST" onsubmit="return sparkSubmit(event)">
-        <textarea name="message" placeholder="Leave a spark..." required></textarea>
-        <input type="email" name="email" placeholder="(Optional) Your email">
-        <button type="submit">Send</button>
-      </form>
-      <p id="spark-response" style="margin-top:1rem;color:#c00;"></p>
-    </div>
-
-    <!-- Hidden Rooms -->
-    <div class="section">
-      <h2>Hidden Rooms</h2>
-      <p>Sometimes the real story hides in plain sight. Click to open.</p>
-      <p>
-        <span class="hidden-link" onclick="toggleRoom('linger')">[For the Ones Who Linger Here]</span>  
-        <span class="hidden-link" onclick="toggleRoom('unsent')">[Unsent Letter]</span>  
-        <span class="hidden-link" onclick="toggleRoom('disappeared')">[To the Women Who Disappeared]</span>  
-        <span class="hidden-link" onclick="toggleRoom('goodgirl')">[Such a Good Girl]</span>
-      </p>
-
-      <div id="linger" class="hidden-room">
-        <h3>For the Ones Who Linger Here</h3>
-        <p>Some women are built like wildfire... Others, like slow burning coals...</p>
-        <p>Then there are the rare few.. The ones who smolder in silence...</p>
-        <p>[full text continues…]</p>
-      </div>
-
-      <div id="unsent" class="hidden-room">
-        <h3>Unsent Letter</h3>
-        <p>I never meant to write this.. But you leave a weight in my hands that only words can carry.</p>
-        <p>[full text continues…]</p>
-      </div>
-
-      <div id="disappeared" class="hidden-room">
-        <h3>To the Women Who Disappeared Without Ever Leaving the Room</h3>
-        <p>[full text continues…]</p>
-      </div>
-
-      <div id="goodgirl" class="hidden-room">
-        <h3>Such a Good Girl</h3>
-        <p>[full text continues…]</p>
-      </div>
-    </div>
+<header>
+  <h1>RTA</h1>
+  <div class="links">
+    <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
+    <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
+    <a href="https://ko-fi.com/rta" target="_blank">Ko-fi</a>
+    <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
   </div>
+</header>
 
-  <footer>
-    <p>Find me here:  
-      <a href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a> | 
-      <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a> | 
-      <a href="https://www.reddit.com/user/Important-Fig600" target="_blank">Reddit Profile</a> | 
-      <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
-    </p>
-    <p>© 2025 Read That Again</p>
-  </footer>
+<div class="spark-container" id="spark">Click to see a spark...</div>
 
-  <script>
-    function sparkSubmit(e){
-      e.preventDefault();
-      const responses = [
-        "Your spark has been taken in.",
-        "It lingers here now.",
-        "Read that again, slower.",
-        "Noted in red.",
-        "Some fires start quiet."
-      ];
-      const msg = responses[Math.floor(Math.random()*responses.length)];
-      document.getElementById('spark-response').innerText = msg;
-      e.target.reset();
-      return false;
-    }
-    function toggleRoom(id) {
-      const el = document.getElementById(id);
-      el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-    }
-  </script>
+<h2 class="hidden-room">Hidden Rooms</h2>
+
+<div class="post">
+  <p>For the Ones Who Linger Here: Some women are built like wildfire… Others, like slow burning coals…</p>
+  <p>Then there are the rare few… The ones who smolder in silence…</p>
+  <p>Turning every glance, every thought, into something dangerous to ignore…</p>
+</div>
+
+<div class="community-sparks" id="community-sparks">
+  <h3>Community Sparks</h3>
+  <p>No sparks yet. Be the first.</p>
+</div>
+
+<div class="reddit-feed">
+  <h3>Latest r/readthatagain Posts</h3>
+  <ul>
+    <li><a href="https://www.reddit.com/r/readthatagain/comments/1" target="_blank">Post 1</a></li>
+    <li><a href="https://www.reddit.com/r/readthatagain/comments/2" target="_blank">Post 2</a></li>
+    <li><a href="https://www.reddit.com/r/readthatagain/comments/3" target="_blank">Post 3</a></li>
+  </ul>
+</div>
+
+<div class="fire-meter">
+  <div class="fire-level" id="fire-level"></div>
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
+    <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Profile</a>
+    <a href="https://ko-fi.com/rta" target="_blank">Ko-fi</a>
+  </div>
+  <p>© 2025 RTA — Read That Again</p>
+</footer>
+
+<script>
+  // Random Sparks
+  const sparks = [
+    "You want it slow… until it isn’t.",
+    "I see you in every late night scroll.",
+    "Some whispered commands can burn louder than fire.",
+    "Hidden rooms hold the secrets worth finding.",
+    "She isn’t asking to be worshipped. She just moves like something sacred."
+  ];
+  const sparkContainer = document.getElementById('spark');
+  sparkContainer.textContent = sparks[Math.floor(Math.random() * sparks.length)];
+  sparkContainer.onclick = () => {
+    sparkContainer.textContent = sparks[Math.floor(Math.random() * sparks.length)];
+    addFire();
+  };
+
+  // Fire Meter
+  const fireLevel = document.getElementById('fire-level');
+  let fireHeight = 0;
+  function addFire() {
+    if(fireHeight < 100) fireHeight += 10;
+    fireLevel.style.height = fireHeight + '%';
+  }
+
+  // Generate embers
+  const smoke = document.getElementById('smoke');
+  for(let i=0;i<20;i++){
+    let ember = document.createElement('div');
+    ember.classList.add('ember');
+    ember.style.left = Math.random() * 100 + 'vw';
+    ember.style.animationDuration = (5 + Math.random()*5) + 's';
+    ember.style.width = ember.style.height = (2 + Math.random()*4) + 'px';
+    smoke.appendChild(ember);
+  }
+</script>
+
 </body>
 </html>
