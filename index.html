@@ -9,7 +9,6 @@
   <style>
     :root {
       --bg: #0a0a0a;
-      --text: #f5f5f5;
       --accent: #e74c3c;   
       --glow: rgba(231,76,60,0.4);
       --deep-glow: rgba(231,76,60,0.7);
@@ -19,10 +18,11 @@
       margin: 0;
       font-family: 'Playfair Display', serif;
       background: var(--bg);
-      color: var(--text);
+      color: #f5f5f5;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      font-size: 1.05rem;
     }
 
     header {
@@ -77,7 +77,7 @@
 
     .post h2 {
       margin-top: 0;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       color: var(--accent);
       position: relative;
       z-index: 1;
@@ -85,9 +85,9 @@
     }
 
     .post p {
-      font-size: 0.9rem;
-      line-height: 1.5;
-      opacity: 0.85;
+      font-size: 1rem;
+      line-height: 1.6;
+      opacity: 0.95;
       position: relative;
       z-index: 1;
     }
@@ -108,11 +108,12 @@
       color: var(--accent);
       text-shadow: 0 0 8px var(--glow);
       margin-bottom: 1rem;
+      font-size: 1.4rem;
     }
 
     #spark-section p {
-      font-size: 0.9rem;
-      opacity: 0.85;
+      font-size: 1rem;
+      opacity: 0.95;
       margin-bottom: 1.5rem;
     }
 
@@ -124,7 +125,7 @@
       border: none;
       outline: none;
       font-family: 'Playfair Display', serif;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       background: #222;
       color: #f5f5f5;
       box-shadow: 0 0 5px var(--glow);
@@ -133,7 +134,7 @@
     #spark-form button {
       padding: 0.8rem 2rem;
       font-size: 1rem;
-      color: var(--text);
+      color: #f5f5f5;
       background: var(--accent);
       border: none;
       border-radius: 0.5rem;
@@ -152,6 +153,7 @@
       opacity: 0;
       transition: opacity 0.5s ease;
       text-shadow: 0 0 6px var(--glow);
+      font-size: 1.05rem;
     }
 
     /* Ember animation */
@@ -172,25 +174,50 @@
       100% { transform: translateY(-120px) scale(0.5); opacity: 0;}
     }
 
+    /* Footer */
     footer {
       text-align: center;
       padding: 1.5rem 1rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.2);
       display: flex;
       justify-content: center;
-      gap: 2.5rem;
-      font-size: 0.95rem;
+      gap: 3rem;
+      font-size: 1.1rem;
+      background: rgba(231,76,60,0.05);
+      transition: background 0.3s ease;
+    }
+
+    footer:hover {
+      background: rgba(231,76,60,0.1);
     }
 
     footer a {
-      color: var(--text);
+      color: #f5f5f5;
       text-decoration: none;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
+      transition: color 0.3s ease, text-shadow 0.4s ease, transform 0.3s ease;
+      position: relative;
+    }
+
+    footer a::after {
+      content: '';
+      display: block;
+      height: 2px;
+      width: 0;
+      background: var(--accent);
+      transition: width 0.3s ease;
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+    }
+
+    footer a:hover::after {
+      width: 100%;
     }
 
     footer a:hover {
       color: var(--accent);
-      text-shadow: 0 0 8px var(--glow);
+      text-shadow: 0 0 12px var(--glow);
+      transform: translateY(-2px);
     }
 
   </style>
@@ -234,39 +261,4 @@
   <footer>
     <a href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">Ko-fi</a>
     <a href="https://www.reddit.com/user/YOUR_USERNAME/" target="_blank">Reddit Profile</a>
-    <a href="https://www.reddit.com/r/unsentunreadunheard/" target="_blank">Subreddit</a>
-    <a href="#">About</a>
-  </footer>
-
-  <script>
-    const replies = [
-      "Some fires burn slow… yours just started.",
-      "The ember remembers every touch.",
-      "Heat lingers where words do not.",
-      "Your message stirred the quiet.",
-      "Flames awaken when noticed.",
-      "A spark has been caught.",
-      "The smoke whispers back.",
-      "Every ember seeks a hand to hold.",
-      "Some fires need no tending.",
-      "Burn, quietly. Burn deliberately."
-    ];
-
-    const form = document.getElementById('spark-form');
-    const replyDiv = document.getElementById('spark-reply');
-    const sparkSection = document.getElementById('spark-section');
-
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-
-      // Show random reply
-      const randomReply = replies[Math.floor(Math.random()*replies.length)];
-      replyDiv.textContent = randomReply;
-      replyDiv.style.opacity = 1;
-
-      // Small ember animation
-      for(let i=0;i<8;i++){
-        const ember = document.createElement('div');
-        ember.classList.add('ember');
-        ember.style.left = (50 + Math.random()*80 - 40) + '%';
-        ember.style.bottom = '10px';
+    <a href="https://www.reddit.com/r/unsentunreadunheard/" target="_
