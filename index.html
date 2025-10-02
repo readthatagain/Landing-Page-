@@ -1,221 +1,184 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Read That Again — RTA</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --bg: #080808;
-      --accent: #e74c3c; /* red ember color */
-    }
-
+    /* Reset + Background */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: 'Playfair Display', serif;
-      background: var(--bg);
-      color: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      font-size: 1.15rem;
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      background: #000;
+      color: #fff;
+      font-family: 'Georgia', serif;
+      line-height: 1.6;
       overflow-x: hidden;
       position: relative;
+      min-height: 100vh;
     }
 
-    /* 🔥 Red smoke background */
-    body::before, body::after {
+    /* Red smoke animation background */
+    body::before {
       content: "";
       position: fixed;
-      top: 0; left: 0;
-      width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(231,76,60,0.2) 0%, transparent 70%);
-      animation: smoke 20s infinite alternate;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 20% 30%, rgba(255,0,0,0.15), transparent 70%),
+                  radial-gradient(circle at 80% 70%, rgba(255,0,0,0.12), transparent 70%);
+      animation: drift 25s infinite alternate ease-in-out;
       z-index: -1;
     }
-
-    body::after {
-      background: radial-gradient(circle, rgba(231,76,60,0.15) 0%, transparent 75%);
-      animation: smoke2 25s infinite alternate-reverse;
+    @keyframes drift {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-5%, -5%) scale(1.1); }
     }
 
-    @keyframes smoke {
-      0% { transform: translate(-10%, -10%) scale(1); opacity: 0.4; }
-      100% { transform: translate(10%, 10%) scale(1.3); opacity: 0.6; }
-    }
+    /* Layout */
+    .container { max-width: 800px; margin: auto; padding: 2rem; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; margin-bottom: 1rem; color: #fff; }
+    h1 { font-size: 2.5rem; text-align: center; }
+    h2 { margin-top: 3rem; font-size: 1.8rem; }
+    h3 { margin-top: 2rem; font-size: 1.4rem; }
+    p { margin-bottom: 1rem; font-size: 1.1rem; }
 
-    @keyframes smoke2 {
-      0% { transform: translate(10%, -5%) scale(1.2); opacity: 0.3; }
-      100% { transform: translate(-10%, 5%) scale(1.4); opacity: 0.5; }
-    }
-
-    /* 🔥 Links: white, no underline */
-    a {
-      color: #f5f5f5 !important;
-      text-decoration: none !important;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: var(--accent) !important;
-    }
-
-    header {
-      text-align: center;
-      padding: 3rem 1rem 2rem;
-    }
-
-    header h1 {
-      font-size: 2.8rem;
-      letter-spacing: 2px;
-      color: #fff;
-      margin: 0;
-    }
-
-    nav {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    main {
-      flex: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-
-    article {
-      margin-bottom: 3rem;
-    }
-
-    article h2 {
-      font-size: 1.8rem;
-      margin-bottom: 0.6rem;
-      color: #fff;
-    }
-
-    article p {
-      margin: 0;
-      color: #f5f5f5;
-    }
-
-    /* Spark form */
-    .spark-form {
-      margin: 3rem auto;
-      max-width: 600px;
+    /* Sparks grid */
+    .sparks { display: grid; gap: 1rem; margin-top: 1rem; }
+    .spark {
+      padding: 1rem;
+      border-left: 3px solid #c00;
       background: rgba(255,255,255,0.05);
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(231,76,60,0.2);
+      font-style: italic;
     }
 
-    .spark-form h3 {
-      margin-bottom: 1rem;
-      font-size: 1.6rem;
-      text-align: center;
-      color: var(--accent);
-    }
-
+    /* Form */
+    form { margin-top: 1rem; }
     input, textarea {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 6px;
-      background: #111;
-      color: #fff;
-      font-size: 1rem;
+      width: 100%; padding: 0.8rem; margin-bottom: 1rem;
+      background: rgba(255,255,255,0.08); border: none; color: #fff;
     }
-
     button {
-      background: var(--accent);
-      border: none;
-      padding: 0.8rem 1.2rem;
-      border-radius: 6px;
-      font-size: 1rem;
-      color: #fff;
+      background: #c00; color: #fff; border: none;
+      padding: 0.8rem 1.5rem; cursor: pointer; font-size: 1rem;
+    }
+    button:hover { background: #900; }
+
+    /* Hidden Rooms */
+    .hidden-link {
+      color: #c00;
       cursor: pointer;
-      width: 100%;
-      transition: 0.3s;
+      margin-right: 1rem;
+    }
+    .hidden-room {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid #c00;
     }
 
-    button:hover {
-      background: #c0392b;
-    }
-
+    /* Footer */
     footer {
       text-align: center;
       padding: 2rem 1rem;
-      background: rgba(0,0,0,0.7);
+      margin-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
       font-size: 1.1rem;
     }
-
     footer a {
-      font-weight: 700;
+      color: #c00;
+      text-decoration: none;
       margin: 0 0.5rem;
     }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <header>
+  <div class="container">
     <h1>Read That Again</h1>
-    <nav>
-      <a href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a>
-      <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a>
-      <a href="https://www.reddit.com/u/Important-Fig600" target="_blank">Reddit Profile</a>
-      <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
-    </nav>
-  </header>
 
-  <main>
-    <article>
-      <h2>Starved</h2>
-      <p>Sometimes I wonder if you know what I see when I look at you... <em>[full post]</em></p>
-    </article>
+    <div class="section">
+      <h2>Sparks</h2>
+      <div class="sparks">
+        <div class="spark">“Sometimes I wonder if you know what I see when I look at you...”</div>
+        <div class="spark">“You want it slow… until it isn't.”</div>
+        <div class="spark">“She’s not looking for perfection. She’s looking for presence.”</div>
+        <div class="spark">“If you think it’s not about you… read it again.”</div>
+        <div class="spark">“Some women are built like wildfire. Others, like slow burning coals.”</div>
+      </div>
 
-    <article>
-      <h2>Unsent Still Imagined</h2>
-      <p>You have no idea what you do to me. It’s not just the way you move... <em>[full post]</em></p>
-    </article>
-
-    <article>
-      <h2>Worth Staying For</h2>
-      <p>She’s not a prize to be won. She’s a story, pages still turning... <em>[full post]</em></p>
-    </article>
-
-    <!-- Add more posts the same way -->
-
-    <div class="spark-form">
-      <h3>Leave a Spark</h3>
-      <form action="https://formspree.io/f/xyznjkpl" method="POST">
-        <input type="text" name="name" placeholder="Your name (optional)">
-        <input type="email" name="email" placeholder="Your email (optional)">
-        <textarea name="message" rows="4" placeholder="Write your spark..."></textarea>
+      <!-- Spark form -->
+      <form action="https://formspree.io/f/xyznjkpl" method="POST" onsubmit="return sparkSubmit(event)">
+        <textarea name="message" placeholder="Leave a spark..." required></textarea>
+        <input type="email" name="email" placeholder="(Optional) Your email">
         <button type="submit">Send</button>
       </form>
+      <p id="spark-response" style="margin-top:1rem;color:#c00;"></p>
     </div>
-  </main>
+
+    <!-- Hidden Rooms -->
+    <div class="section">
+      <h2>Hidden Rooms</h2>
+      <p>Sometimes the real story hides in plain sight. Click to open.</p>
+      <p>
+        <span class="hidden-link" onclick="toggleRoom('linger')">[For the Ones Who Linger Here]</span>  
+        <span class="hidden-link" onclick="toggleRoom('unsent')">[Unsent Letter]</span>  
+        <span class="hidden-link" onclick="toggleRoom('disappeared')">[To the Women Who Disappeared]</span>  
+        <span class="hidden-link" onclick="toggleRoom('goodgirl')">[Such a Good Girl]</span>
+      </p>
+
+      <div id="linger" class="hidden-room">
+        <h3>For the Ones Who Linger Here</h3>
+        <p>Some women are built like wildfire... Others, like slow burning coals...</p>
+        <p>Then there are the rare few.. The ones who smolder in silence...</p>
+        <p>[full text continues…]</p>
+      </div>
+
+      <div id="unsent" class="hidden-room">
+        <h3>Unsent Letter</h3>
+        <p>I never meant to write this.. But you leave a weight in my hands that only words can carry.</p>
+        <p>[full text continues…]</p>
+      </div>
+
+      <div id="disappeared" class="hidden-room">
+        <h3>To the Women Who Disappeared Without Ever Leaving the Room</h3>
+        <p>[full text continues…]</p>
+      </div>
+
+      <div id="goodgirl" class="hidden-room">
+        <h3>Such a Good Girl</h3>
+        <p>[full text continues…]</p>
+      </div>
+    </div>
+  </div>
 
   <footer>
-    <p>© 2025 RTA | Explore more: 
-      <a href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a> • 
-      <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a> • 
+    <p>Find me here:  
+      <a href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a> | 
+      <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a> | 
+      <a href="https://www.reddit.com/user/Important-Fig600" target="_blank">Reddit Profile</a> | 
       <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
     </p>
+    <p>© 2025 Read That Again</p>
   </footer>
+
+  <script>
+    function sparkSubmit(e){
+      e.preventDefault();
+      const responses = [
+        "Your spark has been taken in.",
+        "It lingers here now.",
+        "Read that again, slower.",
+        "Noted in red.",
+        "Some fires start quiet."
+      ];
+      const msg = responses[Math.floor(Math.random()*responses.length)];
+      document.getElementById('spark-response').innerText = msg;
+      e.target.reset();
+      return false;
+    }
+    function toggleRoom(id) {
+      const el = document.getElementById(id);
+      el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+  </script>
 </body>
 </html>
