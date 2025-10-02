@@ -3,15 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quiet Fires — RTA</title>
+  <title>Read That Again — RTA</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #0a0a0a;
-      --accent: #e74c3c;   
-      --glow: rgba(231,76,60,0.4);
-      --deep-glow: rgba(231,76,60,0.7);
+      --bg: #080808;
+      --accent: #e74c3c; /* red ember color */
     }
 
     body {
@@ -22,284 +21,201 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      font-size: 1.12rem;
+      font-size: 1.15rem;
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 🔥 Red smoke background */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(231,76,60,0.2) 0%, transparent 70%);
+      animation: smoke 20s infinite alternate;
+      z-index: -1;
+    }
+
+    body::after {
+      background: radial-gradient(circle, rgba(231,76,60,0.15) 0%, transparent 75%);
+      animation: smoke2 25s infinite alternate-reverse;
+    }
+
+    @keyframes smoke {
+      0% { transform: translate(-10%, -10%) scale(1); opacity: 0.4; }
+      100% { transform: translate(10%, 10%) scale(1.3); opacity: 0.6; }
+    }
+
+    @keyframes smoke2 {
+      0% { transform: translate(10%, -5%) scale(1.2); opacity: 0.3; }
+      100% { transform: translate(-10%, 5%) scale(1.4); opacity: 0.5; }
+    }
+
+    /* 🔥 Links: white, no underline */
+    a {
+      color: #f5f5f5 !important;
+      text-decoration: none !important;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--accent) !important;
     }
 
     header {
       text-align: center;
-      padding: 2rem 1rem;
-      font-size: 2rem;
+      padding: 3rem 1rem 2rem;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
       letter-spacing: 2px;
-      color: var(--accent);
-      text-shadow: 0 0 6px var(--glow);
+      color: #fff;
+      margin: 0;
+    }
+
+    nav {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-size: 1.1rem;
+      font-weight: 600;
     }
 
     main {
       flex: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
     }
 
-    .post {
-      background: #141414;
-      padding: 1.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.7), 0 0 20px var(--glow);
-      transition: transform 0.2s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+    article {
+      margin-bottom: 3rem;
     }
 
-    .post::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, var(--deep-glow) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 0;
+    article h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.6rem;
+      color: #fff;
     }
 
-    .post:hover::before {
-      opacity: 0.15;
-    }
-
-    .post:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 0 20px var(--deep-glow), 0 0 40px var(--glow);
-    }
-
-    .post h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-      color: var(--accent);
-      position: relative;
-      z-index: 1;
-      text-shadow: none;
-    }
-
-    .post p {
-      font-size: 1.14rem;
-      line-height: 1.65;
-      opacity: 0.95;
-      position: relative;
-      z-index: 1;
-      color: #f5f5f5 !important;
-      text-shadow: none;
-    }
-
-    /* Force all links to be white and no underline */
-    .post a, .post p a, #spark-section a, #spark-section p a, footer a {
-      color: #f5f5f5 !important;
-      text-decoration: none !important;
-    }
-
-    /* Spark Section */
-    #spark-section {
-      background: #111;
-      margin: 3rem auto;
-      padding: 2rem;
-      max-width: 600px;
-      border-radius: 1rem;
-      box-shadow: 0 0 20px var(--glow);
-      text-align: center;
-      position: relative;
-    }
-
-    #spark-section h2 {
-      color: var(--accent);
-      text-shadow: none;
-      margin-bottom: 1rem;
-      font-size: 1.4rem;
-    }
-
-    #spark-section p {
-      font-size: 1.12rem;
-      opacity: 0.95;
-      margin-bottom: 1.5rem;
+    article p {
+      margin: 0;
       color: #f5f5f5;
-      text-shadow: none;
     }
 
-    #spark-form textarea, #spark-form input {
-      width: 90%;
+    /* Spark form */
+    .spark-form {
+      margin: 3rem auto;
+      max-width: 600px;
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(231,76,60,0.2);
+    }
+
+    .spark-form h3 {
+      margin-bottom: 1rem;
+      font-size: 1.6rem;
+      text-align: center;
+      color: var(--accent);
+    }
+
+    input, textarea {
+      width: 100%;
       padding: 0.8rem;
       margin-bottom: 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      outline: none;
-      font-family: 'Playfair Display', serif;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
       font-size: 1rem;
-      background: #222;
-      color: #f5f5f5;
-      box-shadow: 0 0 5px var(--glow);
     }
 
-    #spark-form button {
-      padding: 0.8rem 2rem;
-      font-size: 1rem;
-      color: #f5f5f5;
+    button {
       background: var(--accent);
       border: none;
-      border-radius: 0.5rem;
+      padding: 0.8rem 1.2rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      color: #fff;
       cursor: pointer;
-      transition: background 0.3s ease;
+      width: 100%;
+      transition: 0.3s;
     }
 
-    #spark-form button:hover {
+    button:hover {
       background: #c0392b;
     }
 
-    #spark-reply {
-      margin-top: 1.5rem;
-      font-style: italic;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      font-size: 1.1rem;
-      color: #f5f5f5;
-    }
-
-    /* Ember animation */
-    .ember {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: rise 2s linear forwards;
-      pointer-events: none;
-      opacity: 0.8;
-    }
-
-    @keyframes rise {
-      0% { transform: translateY(0) scale(1); opacity: 0.8;}
-      50% { transform: translateY(-50px) scale(1.2); opacity: 0.5;}
-      100% { transform: translateY(-120px) scale(0.5); opacity: 0;}
-    }
-
-    /* Footer */
     footer {
       text-align: center;
-      padding: 1.5rem 1rem;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      font-size: 1.15rem;
-      background: rgba(231,76,60,0.05);
-      transition: background 0.3s ease;
-    }
-
-    footer:hover {
-      background: rgba(231,76,60,0.1);
+      padding: 2rem 1rem;
+      background: rgba(0,0,0,0.7);
+      font-size: 1.1rem;
     }
 
     footer a {
-      transition: color 0.3s ease, text-shadow 0.4s ease, transform 0.3s ease;
-      position: relative;
-    }
-
-    footer a::after {
-      content: '';
-      display: block;
-      height: 2px;
-      width: 0;
-      background: var(--accent);
-      transition: width 0.3s ease;
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-    }
-
-    footer a:hover::after {
-      width: 100%;
-    }
-
-    footer a:hover {
-      color: var(--accent);
-      text-shadow: 0 0 6px var(--glow);
-      transform: translateY(-2px);
+      font-weight: 700;
+      margin: 0 0.5rem;
     }
   </style>
 </head>
 <body>
-  <header>RTA • Quiet Fires</header>
+  <header>
+    <h1>Read That Again</h1>
+    <nav>
+      <a href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a>
+      <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a>
+      <a href="https://www.reddit.com/u/Important-Fig600" target="_blank">Reddit Profile</a>
+      <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
+    </nav>
+  </header>
 
   <main>
-    <a class="post" href="https://www.reddit.com/r/unsentunreadunheard/" target="_blank">
+    <article>
       <h2>Starved</h2>
-      <p>Sometimes I wonder if you know what I see when I look at you... the quiet hunger that leaks through when you think no one is watching.</p>
-    </a>
+      <p>Sometimes I wonder if you know what I see when I look at you... <em>[full post]</em></p>
+    </article>
 
-    <a class="post" href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">
-      <h2>Red</h2>
-      <p>You want to be read but not skimmed. The kind of letter that stains hands. The kind I don’t send...</p>
-    </a>
+    <article>
+      <h2>Unsent Still Imagined</h2>
+      <p>You have no idea what you do to me. It’s not just the way you move... <em>[full post]</em></p>
+    </article>
 
-    <a class="post" href="https://www.reddit.com/user/YOUR_USERNAME/" target="_blank">
+    <article>
       <h2>Worth Staying For</h2>
-      <p>She isn’t a chapter you finish. She’s the whole damn book... always worth the read.</p>
-    </a>
+      <p>She’s not a prize to be won. She’s a story, pages still turning... <em>[full post]</em></p>
+    </article>
 
-    <a class="post" href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">
-      <h2>A Red Letter Testimony</h2>
-      <p>I may be a broken man... still laying bricks on the ruins of who I used to be. Don’t mistake my cracks for blindness. I see you.</p>
-    </a>
+    <!-- Add more posts the same way -->
+
+    <div class="spark-form">
+      <h3>Leave a Spark</h3>
+      <form action="https://formspree.io/f/xyznjkpl" method="POST">
+        <input type="text" name="name" placeholder="Your name (optional)">
+        <input type="email" name="email" placeholder="Your email (optional)">
+        <textarea name="message" rows="4" placeholder="Write your spark..."></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </div>
   </main>
 
-  <section id="spark-section">
-    <h2>Light a Spark</h2>
-    <p>Leave a trace. The fire answers back.</p>
-    <form id="spark-form" action="https://formspree.io/f/xyznjkpl" method="POST">
-      <textarea name="message" placeholder="Your message..." required></textarea><br>
-      <input type="email" name="email" placeholder="Email (optional)"><br>
-      <button type="submit">Ignite</button>
-    </form>
-    <div id="spark-reply"></div>
-  </section>
-
   <footer>
-    <a href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">Ko-fi</a>
-    <a href="https://www.reddit.com/user/YOUR_USERNAME/" target="_blank">Reddit Profile</a>
-    <a href="https://www.reddit.com/r/unsentunreadunheard/" target="_blank">Subreddit</a>
+    <p>© 2025 RTA | Explore more: 
+      <a href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a> • 
+      <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a> • 
+      <a href="https://discord.gg/EyxfE8WAg9" target="_blank">Discord</a>
+    </p>
   </footer>
-
-  <script>
-    // Spark Reply and Ember effect
-    const form = document.getElementById('spark-form');
-    const reply = document.getElementById('spark-reply');
-    const sparkQuotes = [
-      "The fire sees you.",
-      "Quiet sparks become wild flames.",
-      "Your message has been received in red.",
-      "Every ember has a story.",
-      "The ashes remember."
-    ];
-
-    function createEmber() {
-      const ember = document.createElement('div');
-      ember.className = 'ember';
-      ember.style.left = Math.random() * 90 + '%';
-      ember.style.top = '100%';
-      document.body.appendChild(ember);
-      setTimeout(() => { ember.remove(); }, 2000);
-    }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      reply.style.opacity = 1;
-      reply.textContent = sparkQuotes[Math.floor(Math.random()*sparkQuotes.length)];
-      for(let i=0;i<5;i++){ createEmber(); }
-      form.reset();
-    });
-  </script>
 </body>
 </html>
