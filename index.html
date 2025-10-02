@@ -3,249 +3,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTA — Read That Again</title>
+<title>Read That Again</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  /* General Styles */
   body {
     margin: 0;
-    padding: 0;
     font-family: 'Playfair Display', serif;
-    background-color: #000;
-    color: #fff;
-    line-height: 1.6;
+    background: black;
+    color: white;
     overflow-x: hidden;
   }
 
-  a {
-    color: #fff;
-    text-decoration: none;
+  /* Red smoke background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,0,0,0.2), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,0,0,0.15), transparent 50%);
+    animation: smokeMove 60s linear infinite;
+    z-index: -1;
+  }
+
+  @keyframes smokeMove {
+    0% { transform: translate(0,0);}
+    50% { transform: translate(100px,-50px);}
+    100% { transform: translate(0,0);}
   }
 
   header {
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 2rem;
   }
 
-  header h1 {
+  h1 {
     font-size: 3rem;
     margin-bottom: 0.5rem;
   }
 
-  nav {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+  h2 {
+    font-size: 2rem;
+    margin-top: 2rem;
   }
 
-  nav a {
-    font-weight: bold;
+  p {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin: 1rem 0;
+  }
+
+  .post-snippet {
+    margin: 2rem auto;
+    padding: 1.5rem;
+    max-width: 700px;
+    border-left: 3px solid red;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .post-snippet:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px red;
+  }
+
+  footer {
+    background: #111;
+    padding: 2rem;
+    text-align: center;
     font-size: 1.2rem;
   }
 
-  main {
-    max-width: 800px;
-    margin: auto;
-    padding: 0 1rem 4rem 1rem;
-  }
-
-  section.post {
-    margin-bottom: 3rem;
-  }
-
-  section.post h2 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  section.post p {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-  }
-
-  /* Footer */
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    background: #111;
-    position: relative;
-  }
-
   footer a {
-    display: inline-block;
-    margin: 0.5rem 1rem;
-    padding: 0.5rem 1rem;
-    background: #b20000;
-    color: #fff;
-    border-radius: 5px;
+    color: red;
+    text-decoration: none;
+    margin: 0 1rem;
+    font-weight: bold;
     transition: 0.3s;
   }
 
   footer a:hover {
-    background: #ff0000;
-    transform: scale(1.05);
+    text-shadow: 0 0 10px red;
   }
 
-  /* Red Smoke */
-  #red-smoke {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
+  /* Fire meter */
+  .fire-meter-container {
+    width: 300px;
+    height: 25px;
+    border: 2px solid red;
+    margin: 2rem auto;
+    border-radius: 12px;
     overflow: hidden;
   }
 
-  .smoke {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, rgba(255,0,0,0.15) 0%, rgba(0,0,0,0) 70%);
-    border-radius: 50%;
-    animation: floatUp 20s linear infinite;
+  .fire-meter-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, #ff0000, #ff9900);
+    animation: flicker 1s infinite;
   }
 
-  @keyframes floatUp {
-    0% { transform: translateY(100vh) scale(0.5); opacity: 0.3; }
-    50% { opacity: 0.15; }
-    100% { transform: translateY(-50vh) scale(1.5); opacity: 0; }
+  @keyframes flicker {
+    0%, 100% {opacity: 1;}
+    50% {opacity: 0.8;}
   }
 
-  /* Spark Form */
-  #spark-form {
-    margin: 2rem 0;
-    text-align: center;
-  }
-
-  #spark-form textarea {
-    width: 100%;
-    max-width: 600px;
-    height: 100px;
-    padding: 1rem;
-    border-radius: 5px;
-    border: none;
-    resize: none;
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-  }
-
-  #spark-form input[type="submit"] {
-    margin-top: 1rem;
-    padding: 0.5rem 1.5rem;
-    background: #b20000;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  #spark-form input[type="submit"]:hover {
-    background: #ff0000;
-  }
-
-  /* Fire Meter */
-  #fire-meter {
-    text-align: center;
+  /* Random quote popup */
+  #quotePopup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,0,0,0.9);
+    padding: 1rem 2rem;
+    border-radius: 12px;
     font-size: 1.2rem;
-    margin-top: 1rem;
+    display: none;
+    z-index: 1000;
   }
 
+  /* Spark form */
+  .spark-form {
+    margin: 3rem auto;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .spark-form input, .spark-form textarea, .spark-form button {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #555;
+  }
+
+  .spark-form button {
+    background: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .spark-form button:hover {
+    background: #ff3333;
+  }
 </style>
 </head>
 <body>
 
-<!-- Red Smoke Effect -->
-<div id="red-smoke">
-  <div class="smoke" style="left:5%; animation-delay:0s;"></div>
-  <div class="smoke" style="left:20%; animation-delay:4s;"></div>
-  <div class="smoke" style="left:35%; animation-delay:8s;"></div>
-  <div class="smoke" style="left:50%; animation-delay:2s;"></div>
-  <div class="smoke" style="left:65%; animation-delay:6s;"></div>
-  <div class="smoke" style="left:80%; animation-delay:10s;"></div>
-</div>
-
 <header>
-  <h1>RTA — Read That Again</h1>
-  <nav>
-    <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
-    <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
-    <a href="https://ko-fi.com/Important-Fig600" target="_blank">Ko-fi</a>
-  </nav>
+  <h1>Read That Again</h1>
+  <p>Unsent. Unread. But always felt.</p>
 </header>
 
-<main>
-  <!-- Example Post -->
-  <section class="post">
-    <h2>Genesis</h2>
-    <p>Read the full post on <a href="https://ko-fi.com/Important-Fig600" target="_blank">Ko-fi</a> or on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a>.</p>
-  </section>
+<div class="fire-meter-container">
+  <div class="fire-meter-fill" id="fireFill"></div>
+</div>
 
-  <section class="post">
-    <h2>The Queen's Confession</h2>
-    <p>Read the full post on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a> or <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit profile</a>.</p>
-  </section>
+<div class="post-snippet" onclick="window.open('https://www.reddit.com/r/readthatagain/', '_blank')">
+  <h2>Starved</h2>
+  <p>Sometimes I wonder if you know what I see when I look at you. Not the practiced smile...</p>
+</div>
 
-  <section class="post">
-    <h2>Starved</h2>
-    <p>Read the full post on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a> or <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit profile</a>.</p>
-  </section>
+<div class="post-snippet" onclick="window.open('https://www.reddit.com/user/YourRedditProfile', '_blank')">
+  <h2>Unsent Still Imagined</h2>
+  <p>You have no idea what you do to me. It’s not just the way you move...</p>
+</div>
 
-  <section class="post">
-    <h2>For the Ones Who Linger Here</h2>
-    <p>Read the full post on <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">subreddit</a> or <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit profile</a>.</p>
-  </section>
+<div class="post-snippet" onclick="window.open('https://www.ko-fi.com/YourKoFiPage', '_blank')">
+  <h2>Red Letter Testimony</h2>
+  <p>I may be a broken man.. I'm still laying bricks on the ruins of who I used to be...</p>
+</div>
 
-  <!-- Spark Submission Form -->
-  <section id="spark-form">
-    <h2>Send a Spark</h2>
-    <form action="https://formspree.io/f/xyznjkpl" method="POST">
-      <textarea name="spark" placeholder="Write your spark here..."></textarea><br>
-      <input type="email" name="email" placeholder="Optional email">
-      <input type="submit" value="Send">
-    </form>
-    <div id="fire-meter">🔥 Fire Level: <span id="fire-count">0</span></div>
-  </section>
-</main>
+<div class="spark-form">
+  <h2>Submit a Spark</h2>
+  <textarea id="sparkText" placeholder="Write your spark here..." rows="4"></textarea>
+  <input type="email" id="sparkEmail" placeholder="Email (optional)">
+  <button onclick="submitSpark()">Send Spark</button>
+</div>
 
 <footer>
-  <p>Explore more:</p>
-  <a href="https://www.reddit.com/r/readthatagain/s/QGXPXB8zLT" target="_blank">Subreddit</a>
-  <a href="https://www.reddit.com/u/Important-Fig600/s/I8I4siN93I" target="_blank">Reddit Profile</a>
-  <a href="https://ko-fi.com/Important-Fig600" target="_blank">Ko-fi</a>
+  <p>
+    <a href="https://www.ko-fi.com/YourKoFiPage" target="_blank">Ko-fi</a> | 
+    <a href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a> | 
+    <a href="https://www.reddit.com/user/YourRedditProfile" target="_blank">Reddit Profile</a>
+  </p>
 </footer>
 
+<div id="quotePopup"></div>
+
 <script>
-  // Fire Meter Counter
-  let fireCount = 0;
-  const fireCountEl = document.getElementById('fire-count');
-  const form = document.querySelector('#spark-form form');
-
-  form.addEventListener('submit', function(e) {
-    fireCount += 1;
-    fireCountEl.textContent = fireCount;
-  });
-
-  // Random quote display for sparks (example)
-  const sparks = [
-    "Every unread word holds a secret.",
-    "Slow burns leave the deepest marks.",
-    "Some confessions never need an address.",
-    "You are seen, even when silent."
+  const quotes = [
+    "You don’t move like someone chasing attention. You move like someone who already has it.",
+    "Sometimes the right words aren’t spoken, they’re felt.",
+    "You’re not asking to be held. You’re asking to be known.",
+    "Heads, she wins. Tails… she learns.",
+    "Good girl… Keep reading…",
+    "This isn’t about romance. It’s about recognition."
   ];
 
-  function randomSpark() {
-    const sparkDisplay = document.createElement('p');
-    sparkDisplay.style.fontStyle = 'italic';
-    sparkDisplay.textContent = sparks[Math.floor(Math.random() * sparks.length)];
-    document.getElementById('spark-form').appendChild(sparkDisplay);
+  // Random quote pop-up
+  function showQuote() {
+    const popup = document.getElementById('quotePopup');
+    const quote = quotes[Math.floor(Math.random()*quotes.length)];
+    popup.innerText = quote;
+    popup.style.display = 'block';
+    setTimeout(()=> {popup.style.display='none';}, 4000);
   }
 
-  setInterval(randomSpark, 15000); // every 15 seconds
+  setInterval(showQuote, 12000);
+
+  // Fire meter
+  let fireLevel = 0;
+  function submitSpark() {
+    const spark = document.getElementById('sparkText').value;
+    const email = document.getElementById('sparkEmail').value;
+    if(!spark) return alert("Write a spark first.");
+    fireLevel = Math.min(fireLevel + 10, 100);
+    document.getElementById('fireFill').style.width = fireLevel + '%';
+    document.getElementById('sparkText').value = '';
+    document.getElementById('sparkEmail').value = '';
+
+    // Optional: send to Formspree or your API
+    // fetch('https://formspree.io/f/yourFormID', {...})
+  }
 </script>
 
 </body>
