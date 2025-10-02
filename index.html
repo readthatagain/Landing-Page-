@@ -1,396 +1,272 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>RTA — Quiet Fires</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#080808;
-    --muted:#bfbfbf;
-    --accent:#ff4b4b;
-    --accent-2:#f08c4f;
-    --card-bg: rgba(255,255,255,0.04);
-    --glass: rgba(255,255,255,0.02);
-  }
-  html,body{height:100%;margin:0;background:var(--bg);color:#f5f5f5;font-family:"Playfair Display",serif; -webkit-font-smoothing:antialiased;}
-  a{color:var(--accent-2);text-decoration:none;}
-  a:hover{text-decoration:underline;color:var(--accent);text-shadow:0 0 8px rgba(255,75,75,0.25);}
-  .container{max-width:1100px;margin:0 auto;padding:28px;}
-  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{
-    width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    box-shadow:0 6px 18px rgba(240,110,80,0.12), inset 0 -6px 12px rgba(0,0,0,0.2);
-    display:flex;align-items:center;justify-content:center;font-weight:700;color:#080808;
-    font-size:18px;
-  }
-  .brand h1{font-size:18px;margin:0;letter-spacing:0.6px}
-  nav{display:flex;gap:12px;align-items:center}
-  .nav-btn{background:var(--glass);padding:8px 12px;border-radius:999px;font-size:14px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
-  .nav-btn:hover{box-shadow:0 0 12px rgba(255,75,75,0.08);transform:translateY(-2px)}
-  main{min-height:60vh}
-  /* Ember Grid */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:32px 0}
-  .ember-card{background:var(--card-bg);padding:20px;border-radius:14px;position:relative;overflow:hidden;cursor:pointer;border-top:3px solid rgba(255,75,75,0.06);transition:transform .25s ease, box-shadow .25s ease}
-  .ember-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.6);border-top-color:var(--accent)}
-  .ember-title{font-weight:700;font-size:20px;margin:0 0 8px}
-  .ember-excerpt{color:var(--muted);font-size:14px;line-height:1.5}
-  .ember-meta{position:absolute;right:12px;bottom:12px;font-size:12px;color:#b6b6b6}
-  /* Room / modal */
-  .room-overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.7), rgba(5,5,5,0.9));display:none;z-index:60;backdrop-filter: blur(2px);overflow:auto}
-  .room{max-width:900px;margin:40px auto;padding:48px;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(255,255,255,0.02));border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.6);position:relative}
-  .room h2{margin:0 0 12px;font-size:28px;color:#fff;text-shadow:0 0 10px rgba(255,50,50,0.08)}
-  .room .meta{color:var(--muted);margin-bottom:18px}
-  .room p{font-size:18px;line-height:1.9;color:#eee;margin:12px 0;opacity:0;transform:translateY(20px);transition:opacity .7s ease, transform .7s ease}
-  .room p.visible{opacity:1;transform:translateY(0)}
-  .room .controls{display:flex;gap:12px;align-items:center;margin-top:18px}
-  .small-btn{background:var(--accent);color:#080808;padding:10px 14px;border-radius:999px;border:none;cursor:pointer;font-weight:600}
-  .muted-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 12px;border-radius:999px;cursor:pointer}
-  /* Spark area */
-  .spark-floating{position:fixed;right:22px;bottom:22px;z-index:70}
-  .spark-circle{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#080808;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(240,80,80,0.18)}
-  .spark-form-panel{position:fixed;right:22px;bottom:92px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;width:320px;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:none;z-index:71}
-  .spark-form-panel label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  .spark-form-panel input,.spark-form-panel textarea{width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:8px;background:rgba(255,255,255,0.02);color:#fff}
-  .spark-thanks{color:var(--accent);margin-top:8px;font-weight:600;opacity:0;transition:opacity .35s}
-  .spark-thanks.visible{opacity:1}
-  /* pop replies */
-  .pop-reply{position:fixed;left:50%;transform:translateX(-50%);bottom:110px;background:rgba(0,0,0,0.75);padding:12px 18px;border-radius:10px;color:var(--accent);border:1px solid rgba(255,75,75,0.08);z-index:99;opacity:0;transition:opacity .25s}
-  .pop-reply.visible{opacity:1}
-  /* Reddit embed */
-  .side-panel{background:var(--glass);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);font-size:14px;color:var(--muted)}
-  .layout{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
-  @media(max-width:980px){.layout{grid-template-columns:1fr}}
-  footer{margin:36px 0 12px;color:#8f8f8f;font-size:13px;text-align:center}
-  /* Embers (global) */
-  .ember-particle{position:fixed;pointer-events:none;border-radius:50%;mix-blend-mode:screen;z-index:5;transform:translateZ(0)}
-  /* hover whisper */
-  .whisper{position:relative;border-bottom:1px dotted rgba(255,75,75,0.18);cursor:help}
-  .whisper .tip{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 8px);background:var(--accent);color:#080808;padding:6px 8px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s;font-size:12px}
-  .whisper:hover .tip{opacity:1}
-  /* hidden reveal */
-  .hidden-line{display:none;color:#ffd7d7;margin-top:8px;background:rgba(255,75,75,0.02);padding:8px;border-radius:6px}
-  /* reaction counters */
-  .reactions{display:flex;gap:10px;margin-top:16px}
-  .react-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:999px;color:var(--muted);cursor:pointer}
-  .react-btn.active{border-color:var(--accent);color:var(--accent);box-shadow:0 6px 20px rgba(255,75,75,0.06)}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiet Fires — RTA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --text: #f5f5f5;
+      --accent: #e74c3c;   
+      --glow: rgba(231,76,60,0.4);
+      --deep-glow: rgba(231,76,60,0.7);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Playfair Display', serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--glow);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .post {
+      background: #141414;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7), 0 0 20px var(--glow);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--deep-glow) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+
+    .post:hover::before {
+      opacity: 0.15;
+    }
+
+    .post:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 20px var(--deep-glow), 0 0 40px var(--glow);
+    }
+
+    .post h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 0 8px var(--glow);
+    }
+
+    .post p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      opacity: 0.85;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Spark Section */
+    #spark-section {
+      background: #111;
+      margin: 3rem auto;
+      padding: 2rem;
+      max-width: 600px;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px var(--glow);
+      text-align: center;
+      position: relative;
+    }
+
+    #spark-section h2 {
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--glow);
+      margin-bottom: 1rem;
+    }
+
+    #spark-section p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-bottom: 1.5rem;
+    }
+
+    #spark-form textarea, #spark-form input {
+      width: 90%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      outline: none;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      background: #222;
+      color: #f5f5f5;
+      box-shadow: 0 0 5px var(--glow);
+    }
+
+    #spark-form button {
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--accent);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      text-shadow: 0 0 5px var(--glow);
+      transition: background 0.3s ease;
+    }
+
+    #spark-form button:hover {
+      background: #c0392b;
+    }
+
+    #spark-reply {
+      margin-top: 1.5rem;
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      text-shadow: 0 0 6px var(--glow);
+    }
+
+    /* Ember animation */
+    .ember {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: rise 2s linear forwards;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.8;}
+      50% { transform: translateY(-50px) scale(1.2); opacity: 0.5;}
+      100% { transform: translateY(-120px) scale(0.5); opacity: 0;}
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      font-size: 0.95rem;
+    }
+
+    footer a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--glow);
+    }
+
+  </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="brand">
-      <div class="logo">R</div>
-      <div>
-        <h1>RTA — Quiet Fires</h1>
-        <div style="font-size:12px;color:var(--muted)">Unsent. Unread. Remembered.</div>
-      </div>
-    </div>
-    <nav>
-      <button class="nav-btn" id="homeBtn">Home</button>
-      <a class="nav-btn" href="https://ko-fi.com/readthatagain" target="_blank">Ko-fi</a>
-      <button class="nav-btn" id="openDiscord">Enter the Ember Room</button>
-      <a class="nav-btn" href="https://www.reddit.com/r/readthatagain/" target="_blank">Subreddit</a>
-    </nav>
-  </header>
+  <header>RTA • Quiet Fires</header>
 
   <main>
-    <div class="layout">
-      <div>
-        <section id="hero" style="padding:36px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));">
-          <h2 style="font-size:34px;margin:0 0 8px">Red Leaves Stay Read</h2>
-          <p style="color:var(--muted);max-width:760px">A library of unsent letters and quiet confessions. Step into each ember — each one keeps a secret.</p>
-          <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
-            <button class="small-btn" id="exploreBtn">Explore Embers</button>
-            <button class="muted-btn" id="dailyBtn">Today's Ember</button>
-          </div>
-        </section>
+    <a class="post" href="https://www.reddit.com/r/unsentunreadunheard/" target="_blank">
+      <h2>Starved</h2>
+      <p>Sometimes I wonder if you know what I see when I look at you... the quiet hunger that leaks through when you think no one is watching.</p>
+    </a>
 
-        <section id="gridSection" style="margin-top:26px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <h3 style="margin:0">Library of Embers</h3>
-            <div style="color:var(--muted);font-size:13px">Click an ember to enter its room</div>
-          </div>
+    <a class="post" href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">
+      <h2>Red</h2>
+      <p>You want to be read but not skimmed. The kind of letter that stains hands. The kind I don’t send...</p>
+    </a>
 
-          <div class="grid" id="emberGrid" style="margin-top:18px"></div>
-        </section>
-      </div>
+    <a class="post" href="https://www.reddit.com/user/YOUR_USERNAME/" target="_blank">
+      <h2>Worth Staying For</h2>
+      <p>She isn’t a chapter you finish. She’s the whole damn book... always worth the read.</p>
+    </a>
 
-      <aside>
-        <div class="side-panel">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong style="color:#fff">The Circle</strong>
-            <button class="muted-btn" id="openDiscord2">Join</button>
-          </div>
-          <div style="margin-top:12px;color:var(--muted);font-size:13px">
-            <div style="margin-bottom:8px">Latest from r/readthatagain</div>
-            <!-- RSS iframe: lightweight -->
-            <iframe src="https://www.reddit.com/r/readthatagain/.rss" style="width:100%;height:220px;border:none;background:transparent;color:var(--muted)"></iframe>
-            <div style="margin-top:12px">
-              <a href="https://discord.gg/EyxfE8WAg9" target="_blank" class="nav-btn" style="display:block;text-align:center">Enter Discord</a>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </div>
+    <a class="post" href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">
+      <h2>A Red Letter Testimony</h2>
+      <p>I may be a broken man... still laying bricks on the ruins of who I used to be. Don’t mistake my cracks for blindness. I see you.</p>
+    </a>
   </main>
 
-  <footer>
-    &copy; 2025 RTA — Quiet Fires. All sparks kept in confidence. • <span id="lastReadMarker">Last read: none</span>
-  </footer>
-</div>
-
-<!-- Room overlay -->
-<div class="room-overlay" id="roomOverlay" aria-hidden="true">
-  <div class="room" id="roomContent" role="dialog" aria-modal="true">
-    <button class="muted-btn" id="closeRoom" style="position:absolute;right:18px;top:18px">Close</button>
-    <h2 id="roomTitle">Title</h2>
-    <div class="meta" id="roomMeta">—</div>
-    <div id="roomText"></div>
-
-    <div class="controls" style="margin-top:18px">
-      <div style="flex:1">
-        <div class="reactions">
-          <button class="react-btn" id="sparkedBtn">Sparked • <span id="sparkCount">0</span></button>
-          <button class="react-btn" id="lingerBtn">Lingering • <span id="lingerCount">0</span></button>
-        </div>
-      </div>
-      <div>
-        <button class="small-btn" id="openSparkFromRoom">Leave a Spark</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Spark floating -->
-<div class="spark-floating">
-  <div class="spark-circle" id="sparkToggle">✦</div>
-  <div class="spark-form-panel" id="sparkPanel" aria-hidden="true">
-    <form id="sparkForm" action="https://formspree.io/f/xyznjkpl" method="POST">
-      <label for="name">Your Name (optional)</label>
-      <input id="sparkName" name="name" placeholder="Name / initial" />
-      <label for="_replyto">Email (optional)</label>
-      <input id="sparkEmail" name="_replyto" placeholder="you@example.com" />
-      <label for="message">Your Spark</label>
-      <textarea id="sparkMessageInput" name="message" rows="4" placeholder="A thought, a fragment, a confession..." required></textarea>
-      <button type="submit" class="small-btn" style="margin-top:6px">Ignite</button>
-      <div class="spark-thanks" id="sparkThanks">Spark sent ✦</div>
+  <section id="spark-section">
+    <h2>Light a Spark</h2>
+    <p>Leave a trace. The fire answers back.</p>
+    <form id="spark-form" action="https://formspree.io/f/xyznjkpl" method="POST">
+      <textarea name="message" placeholder="Your message..." required></textarea><br>
+      <input type="email" name="email" placeholder="Email (optional)"><br>
+      <button type="submit">Ignite</button>
     </form>
-  </div>
-</div>
+    <div id="spark-reply"></div>
+  </section>
 
-<div class="pop-reply" id="popReply" role="status" aria-live="polite"></div>
+  <footer>
+    <a href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">Ko-fi</a>
+    <a href="https://www.reddit.com/user/YOUR_USERNAME/" target="_blank">Reddit Profile</a>
+    <a href="https://www.reddit.com/r/unsentunreadunheard/" target="_blank">Subreddit</a>
+    <a href="#">About</a>
+  </footer>
 
-<!-- embers container (particles) -->
-<div id="emberContainer"></div>
+  <script>
+    const replies = [
+      "Some fires burn slow… yours just started.",
+      "The ember remembers every touch.",
+      "Heat lingers where words do not.",
+      "Your message stirred the quiet.",
+      "Flames awaken when noticed.",
+      "A spark has been caught.",
+      "The smoke whispers back.",
+      "Every ember seeks a hand to hold.",
+      "Some fires need no tending.",
+      "Burn, quietly. Burn deliberately."
+    ];
 
-<script>
-/* =========================
-   Posts data (use all posts provided)
-   Each post: id,title,meta,content array (paragraphs), whispers {index,selector,text} and hiddenTriggers for easter eggs
-   ========================= */
-const POSTS = [
-  {
-    id:"queens-confession",
-    title:"The Queen's Confession",
-    meta:"~Red ink on black squares",
-    content:[
-`You sit across from me like you sat across from every quiet thing you meant to learn.`,
-`The board is between us but not a barrier. It is a map of where you have been and what you have not said.`,
-`Your fingers hover over a pawn as if deciding whether to betray it or protect it.`,
-`That hesitation tells me more than your voice ever did.`,
-`I open with a small sacrifice, the kind that looks accidental if you do not know what to watch for.`,
-`You smile, pleased, and move like someone who believes in blunt instruments.`,
-`That confidence is beautiful at first.`,
-`It lets me see the lines you draw for yourself.`,
-`It lets me see the places you will yield and the places you will stand when pressed properly.`,
-`You move the queen with the gravity of someone who has been given permission to want.`,
-`She glides across the board without shame.`,
-`Watch her.`,
-`She is not merely a piece.`,
-`She is the part of you that refuses to be polite.`,
-`She is the part that will cut through rules when the light is warm enough.`,
-`I let her taste the center because power that is shown is often more dangerous than power that is hidden.`,
-`Let it be known. I have patience for both.`,
-`The knight comes at you from an angle you thought impossible.`,
-`It lands where you thought safe.`,
-`Temptation does not announce itself.`,
-`It arrives with an apology and a wink.`,
-`You laugh..`,
-`Soft, the way someone discovers a better secret than the one they had.`,
-`That sound is a move.`,
-`It changes the tempo.`,
-`The air tightens.`,
-`The room contracts until the only sound is the clock and the slow rewiring of desire.`,
-`I do not speak of checkmate.`,
-`I speak of smaller violences.`,
-`I speak of silence pressed into the shape of a threat.`,
-`When I say check I am not warning.`,
-`I am making a promise.`,
-`There is heat in the space where your hand hovers.`,
-`There is the knowledge that your next step will tell me more than any confession ever could.`,
-`You think of retreat.`,
-`You think of saving the king as if kings could be saved by ceremony.`,
-`You think of safety the way someone thinks of an old lover who stopped returning calls.`,
-`And in that thinking you reveal the ledger of your regrets.`,
-`You reveal the inventory of the nights you left yourself small to avoid making someone else jealous.`,
-`You reveal the parts you hide in plain sight.`,
-`The board becomes a room.`,
-`The pieces become the reasons you come and go.`,
-`The pawn I surrendered at the start is now a doorway.`,
-`The queen you trusted becomes a mirror.`,
-`Check is not a trap.`,
-`It is a question posed so quietly you answer without knowing you did.`,
-`I will not claim victory.`,
-`Victory is a loud thing and I prefer things that speak in the dark.`,
-`When the game dissolves it will not be because one of us fell.`,
-`It will be because one of us learned the true move was not to move at all.`,
-`Maybe you will take your hand away and never return it to the board.`,
-`Maybe you will lean in and take the piece that was offered with both hands.`,
-`Either choice is its own kind of confession.`,
-`Read it again.`,
-`There are notes between the squares you missed the first time.`,
-`There are promises disguised as openings that wait for you on the second read.`
-    ],
-    whispers:[
-      {index:9,tip:"She moves where she is wanted."},
-      {index:40,tip:"The pawn opens a door."}
-    ],
-    hidden:[
-      {word:"Read it again",text:"There are left-behind promises tucked in commas and silences."}
-    ]
-  },
-  {
-    id:"where-silence-fails",
-    title:"Where Silence Fails",
-    meta:"~ Written & Red",
-    content:[
-`I should have let silence be the ending. But silence is a poor liar, and you taught me that absence leaves louder marks than presence ever could.`,
-`I don’t write to bring you back. I write because the weight of what was never said keeps pulling me under. You linger in small, ordinary places.. A half finished song on repeat, headlights passing over wet pavement, a laugh that doesn’t belong to you but nearly does.`,
-`If this letter ever reached you, you’d recognize yourself in every line, even if I never wrote your name. You’d know it’s you in the pauses, in the way I circle the words without landing on them.`,
-`There was always a part of me that wanted to be caught in your gravity, and a part that wanted to break free. Maybe both were true. Maybe that’s why I never said what I meant, why you never asked what you already knew.`,
-`So I leave this here. A letter not addressed, not sent. A ghost of a confession, pressed between the lines.`,
-`Because the truth is, I don’t need you to read it.`,
-`I only needed to write it.`
-    ],
-    whispers:[
-      {index:0,tip:"Silence speaks in fingerprints."},
-      {index:5,tip:"Writing is a kind of exhale."}
-    ],
-    hidden:[]
-  },
-  {
-    id:"unsent-you",
-    title:"Unsent You",
-    meta:"~ Spelt Desires",
-    content:[
-`You.`,
-`I should leave this unsent, but something about Saturday makes the thought of restraint feel like a lie.`,
-`I think about you in the quiet moments..`,
-`The ones between distraction and sleep. You come to me like a secret I was never meant to hold, yet can’t let go.`,
-`If words could touch skin, this page would already be warm.`,
-`I don’t picture you in fragments.`,
-`Not just lips.`,
-`Not just hands.`,
-`I see the whole of you, the way your presence would fill a room I’ve already built in my head..`,
-`Four walls, no windows, only you pressed against them.`,
-`Three chords and the truth..`,
-`Two bodies getting closer .`,
-`One almost..`,
-`I’d blindfold you with words before ever lifting a hand. `,
-`Hold your wrists above you with thought alone.`,
-`Let silence do what sound never could..`,
-`Make you lean closer, make you wait.`,
-`There’s something intoxicating about knowing I could stop here.`,
-`That I could leave you suspended in almost.`,
-`But you and I both know I wouldn’t.`,
-`I’d write my name on the curve of your neck, slow enough to make you forget every other word you’ve ever learned.`,
-`And when the ink runs dry, you’d still feel the impression.`
-    ],
-    whispers:[
-      {index:10,tip:"Three chords, one truth."},
-      {index:19,tip:"The mark remains."}
-    ],
-    hidden:[]
-  },
-  {
-    id:"waiting-noticed",
-    title:"Waiting to be Noticed",
-    meta:"~ Unsentunreadunheard",
-    content:[
-`I’ve been noticing you...`,
-`Not the version you show the world..`,
-`The quiet one.`,
-`The one who holds her feral behind careful walls.`,
-`The one who’s been too much.`,
-`Too loud.`,
-`Too bright.`,
-`Too sharp.`,
-`I see her.`,
-`I see the hunger in the half smile you try to hide.`,
-`The almost imperceptible pull when someone crosses your path.`,
-`The way your eyes linger a second too long on what you want but don’t take.`,
-`You’ve been starved for someone who notices.`,
-`Someone who knows the difference between soft and weak. Between quiet and invisible.`,
-`Someone who doesn’t rush.`,
-`Doesn’t beg.`,
-`Doesn’t try to catch what’s already moving.`,
-`I don’t want to catch.`,
-`I want to be invited.`,
-`I want the slow knowing.`,
-`The measured orbit..`,
-`The almost that tastes like surrender..`,
-`You don’t need to speak.`,
-`You don’t need to perform.`,
-`I will read the pauses..`,
-`The glances.`,
-`The weight you carry in silence.`,
-`When you finally lean in..`,
-`I will meet you there.`,
-`Not to take.`,
-`Not to own.`,
-`Just to recognize.`,
-`Because I’ve learned the rare ones aren’t loud.`,
-`They’re the ones who wait to be seen.`,
-`They’re the ones who make a man remember what he’s been missing.`,
-`And you?`,
-`You’ve already found me.`
-    ],
-    whispers:[
-      {index:12,tip:"Noticing is a love language."}
-    ],
-    hidden:[]
-  },
-  {
-    id:"starved",
-    title:"Starved",
-    meta:"",
-    content:[
-`Sometimes I wonder if you know what I see when I look at you.`,
-`Not the practiced smile or the words you offer to keep things light.`,
-`I see the hollow places. The quiet hunger that leaks through when you think no one is watching.`,
-`It’s recognition. That sharp pull when you realize someone notices the part of you you’ve starved, the piece no one ever seems to touch.`,
-`I feel it between us.`,
-`The restraint. The almost. The way silence gets heavy when it should be casual.`,
-`It’s in the pauses, the flicker of your eyes, the breath you hold too long.`,
-`If I let myself, I could take it.`,
-`Not in cruelty...never that.`,
-`But in a way that would leave you undone and rebuilt all at once.`,
-`Raw. Consuming. Stripped of every extra layer you’ve been forced to wear.`,
-`I don’t write this for answers.`,
-`Just to say I see it.`,
-`And maybe you needed to know someone does.`
-    ],
-    whispers:[
-      {index:3,tip:"I see the hunger you hide."}
-    ],
-    hidden:[]
-  },
-  {
-    id:"unsent-still-imagined",
-    title:"Unsent Still Imagined",
-    meta:"",
-    content:[
-`You have no i
+    const form = document.getElementById('spark-form');
+    const replyDiv = document.getElementById('spark-reply');
+    const sparkSection = document.getElementById('spark-section');
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      // Show random reply
+      const randomReply = replies[Math.floor(Math.random()*replies.length)];
+      replyDiv.textContent = randomReply;
+      replyDiv.style.opacity = 1;
+
+      // Small ember animation
+      for(let i=0;i<8;i++){
+        const ember = document.createElement('div');
+        ember.classList.add('ember');
+        ember.style.left = (50 + Math.random()*80 - 40) + '%';
+        ember.style.bottom = '10px';
