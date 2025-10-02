@@ -90,6 +90,17 @@
       opacity: 0.95;
       position: relative;
       z-index: 1;
+      color: #f5f5f5 !important; /* force white for summaries */
+    }
+
+    .post a {
+      color: #f5f5f5 !important;
+      text-decoration: none;
+    }
+
+    .post p a {
+      color: #f5f5f5 !important;
+      text-decoration: underline; /* optional for emphasis */
     }
 
     /* Spark Section */
@@ -115,6 +126,7 @@
       font-size: 1rem;
       opacity: 0.95;
       margin-bottom: 1.5rem;
+      color: #f5f5f5;
     }
 
     #spark-form textarea, #spark-form input {
@@ -154,6 +166,7 @@
       transition: opacity 0.5s ease;
       text-shadow: 0 0 6px var(--glow);
       font-size: 1.05rem;
+      color: #f5f5f5;
     }
 
     /* Ember animation */
@@ -261,4 +274,37 @@
   <footer>
     <a href="https://ko-fi.com/YOUR_KOFI_LINK" target="_blank">Ko-fi</a>
     <a href="https://www.reddit.com/user/YOUR_USERNAME/" target="_blank">Reddit Profile</a>
-    <a href="https://www.reddit.com/r/unsentunreadunheard/" target="_
+    <a href="https://www.reddit.com/r/unsentunreadunheard/" target="_blank">Subreddit</a>
+  </footer>
+
+  <script>
+    // Spark Reply and Ember effect
+    const form = document.getElementById('spark-form');
+    const reply = document.getElementById('spark-reply');
+    const sparkQuotes = [
+      "The fire sees you.",
+      "Quiet sparks become wild flames.",
+      "Your message has been received in red.",
+      "Every ember has a story.",
+      "The ashes remember."
+    ];
+
+    function createEmber() {
+      const ember = document.createElement('div');
+      ember.className = 'ember';
+      ember.style.left = Math.random() * 90 + '%';
+      ember.style.top = '100%';
+      document.body.appendChild(ember);
+      setTimeout(() => { ember.remove(); }, 2000);
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      reply.style.opacity = 1;
+      reply.textContent = sparkQuotes[Math.floor(Math.random()*sparkQuotes.length)];
+      for(let i=0;i<5;i++){ createEmber(); }
+      form.reset();
+    });
+  </script>
+</body>
+</html>
